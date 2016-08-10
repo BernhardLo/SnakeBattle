@@ -32,7 +32,7 @@ namespace SnakeBattleServer
                 {
                     NetworkStream n = tcpclient.GetStream();
                     message = new BinaryReader(n).ReadString();
-
+                    Console.WriteLine(message);
                     var msg = MessageHandler.Deserialize(message);
 
                     if (msg.GetType() == typeof(UserNameMessage))
@@ -40,21 +40,20 @@ namespace SnakeBattleServer
                         UserNameMessage response = new UserNameMessage(msg.UserName);
                         response.UserNameConfirm = myServer.CheckUserName(msg.UserName);
                         this.UserName = response.UserName;
-                        myServer.PrivateSend(tcpclient ,MessageHandler.Serialize( response));
-                        
+                        myServer.PrivateSend(tcpclient, MessageHandler.Serialize(response));
                     }
 
                     //myServer.Broadcast(this, message);
-                    Console.WriteLine(message);
                 }
 
                 myServer.DisconnectClient(this);
                 tcpclient.Close();
+                //todo: ta bort användarenn ur clientlistan
             }
             catch (IOException)
             {
-                Console.WriteLine("Remote client disconnected" + tcpclient.Client.AddressFamily.ToString());
-                //TO-DO: Visa IP på användaren som lämnar
+                Console.WriteLine("Remote client disconnected: " + tcpclient.Client.AddressFamily.ToString());
+                //todo: Visa IP på användaren som lämnar och ta bort ur clientlistan
             }
             catch (Exception ex)
             {

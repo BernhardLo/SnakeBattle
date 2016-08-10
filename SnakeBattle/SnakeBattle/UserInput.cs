@@ -43,7 +43,7 @@ namespace SnakeBattle
                 userName = GetString();
                 if (!String.IsNullOrWhiteSpace(userName))
                 {
-                    //to do: inmatningskontroller för användarnamn
+                    //todo: inmatningskontroller för användarnamn
                     //man får inte heta "Error" eller "<empty>"
                     if (true)
                     {

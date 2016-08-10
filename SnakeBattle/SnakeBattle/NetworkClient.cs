@@ -12,7 +12,7 @@ namespace SnakeBattle
 {
     class NetworkClient
     {
-        private TcpClient client;
+        private TcpClient serverClient;
         private List<String> commandList = new List<String>();
 
         public bool Connect(string ip, int port)
@@ -21,7 +21,7 @@ namespace SnakeBattle
 
             try
             {
-                client = new TcpClient(ip, port);
+                serverClient = new TcpClient(ip, port);
                 Thread listenerThread = new Thread(Listen);
                 listenerThread.Start();
                 connectSucceeded = true;
@@ -41,7 +41,7 @@ namespace SnakeBattle
             {
                 while (true)
                 {
-                    NetworkStream n = client.GetStream();
+                    NetworkStream n = serverClient.GetStream();
                     message = new BinaryReader(n).ReadString();
 
                     commandList.Add(message);
@@ -57,14 +57,14 @@ namespace SnakeBattle
         {
             try
             {
-                NetworkStream nws = client.GetStream();
+                NetworkStream nws = serverClient.GetStream();
 
                 BinaryWriter bnw = new BinaryWriter(nws);
                 bnw.Write(message);
                 bnw.Flush();
 
                 if (message.Equals("quit"))
-                    client.Close();
+                    serverClient.Close();
             }
             catch (Exception ex)
             {

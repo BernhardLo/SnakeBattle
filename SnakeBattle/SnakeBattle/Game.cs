@@ -14,7 +14,7 @@ namespace SnakeBattle
         const int playFieldWidth = 20;
         const int playFieldHeight = 20;
         Player player;
-        private string serverIP;
+        string serverIP;
         NetworkClient nwc;
         const int gamePort = 5000;
 
@@ -43,23 +43,16 @@ namespace SnakeBattle
         {
             //Ansluter till servern och skriver ut IP-adressen om det lyckades
             Console.WriteLine(ConnectToServer());
-
+            //skickar ett usernamemessage till servern, som i sin tur kontrollerar om namnet är ledigt.
             Console.WriteLine(SetUserName());
-            bool validUsername = false;
-            do
-            {
-                Console.WriteLine("Ange användarnamn: ");
-                player.PlayerName = Console.ReadLine();
-            } while (!validUsername);
+
+            PrintMenu();
 
             bool gameProperties = false;
-
-
             do
             {
                 Console.WriteLine("Ange antal spelare: ");
                 int antalSpelare = Convert.ToInt32(Console.ReadLine());
-
 
             } while (gameProperties);
 
@@ -73,20 +66,30 @@ namespace SnakeBattle
             Console.WriteLine("Game Over");
         }
 
+        /// <summary>
+        /// reads an ip address input from the user
+        /// connects to the server with that address
+        /// </summary>
+        /// <returns>string representation of ip adress</returns>
         private string ConnectToServer ()
         {
             string serverIP = "";
             bool connected = false;
-            do
+            do //denna loop körs till klienten anslutit till servern
             {
-                serverIP = UserInput.GetIp();
-                if (nwc.Connect(serverIP, gamePort))
+                serverIP = UserInput.GetIp(); //metod för att kontrollera att inmatningen är en godkänd ip-adress
+                if (nwc.Connect(serverIP, gamePort)) //metod som returnerar "true" om anslutningen lyckades
                     connected = true;
 
             } while (!connected);
             return serverIP;
         }
 
+        //todo : skriv en summary för SetUserName
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         private string SetUserName()
         {
             string userName = "";
@@ -96,7 +99,8 @@ namespace SnakeBattle
                 userName = UserInput.GetUserName();
                 if (RegisterUserName(userName))
                 {
-
+                    player.PlayerName = userName;
+                    validUserName = true;
                 }
 
             } while (!validUserName);
@@ -109,13 +113,8 @@ namespace SnakeBattle
             bool valid = false;
             try
             {
-                //nwc.Send(MessageHandler.Serialize(new usernamemessage))
-                //usernamemessage = new usernamemessage (alla variabler)
-                //string message = json.serialize(usernamemessage)
-                //nwc.Send(message)
                 UserNameMessage unm = new UserNameMessage(name);
                 nwc.Send(MessageHandler.Serialize(unm));
-
 
             } catch (Exception ex)
             {
@@ -123,7 +122,6 @@ namespace SnakeBattle
             }
             return valid;
         }
-
 
         public void DrawField()
         {
@@ -176,7 +174,6 @@ namespace SnakeBattle
             int newX = player.Xpos;
             int newY = player.Ypos;
 
-
             switch (keyInfo.Key)
             {
                 case ConsoleKey.RightArrow:
@@ -213,6 +210,12 @@ namespace SnakeBattle
             {
                 player.IsAlive = false;
             }
+        }
+
+        private void PrintMenu()
+        {
+            //todo: meny
+            Console.WriteLine("detta är menyn");
         }
     }
 }
