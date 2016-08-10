@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,15 +12,20 @@ namespace SnakeBattle
 
         public static string GetIp()
         {
+            IPAddress ip;
             string ret = "";
-            Console.Write("Skriv in IP-adress till servern: ");
             bool valid = false;
             do
             {
+                Console.Write("Skriv in IP-adress till servern: ");
                 ret = GetString();
-                if (String.IsNullOrWhiteSpace(ret))
+                
+                if (!String.IsNullOrWhiteSpace(ret))
                 {
-
+                    if (IPAddress.TryParse(ret, out ip))
+                    {
+                        valid = true;
+                    }
                 }
 
             } while (!valid);

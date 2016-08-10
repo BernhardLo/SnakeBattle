@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,7 +14,8 @@ namespace SnakeBattle
         const int playFieldHeight = 20;
         Player player;
         private string serverIP;
-
+        NetworkClient nwc;
+        const int gamePort = 5000;
 
         public Game()
         {
@@ -21,6 +23,7 @@ namespace SnakeBattle
             player = new Player("Testplayer", 7, 7);
             CreatePlayField();
             playField[7, 7].Occupant = player;
+            nwc = new NetworkClient();
         }
 
         private void CreatePlayField()
@@ -37,35 +40,37 @@ namespace SnakeBattle
 
         public void Play()
         {
-            //bool connected = false;
-            //do
-            //{
-            //    Console.Write("Ange IP till servern: ");
-            //    serverIP = Console.ReadLine();
-            //    //todo: anslut till servern
+            bool connected = false;
+            do
+            {
+                serverIP = UserInput.GetIp();
+
+                if (nwc.Connect(serverIP, gamePort))
+                    connected = true;
+
+            } while (!connected);
+
+            Console.WriteLine(serverIP);
+
+            serverIP = UserInput.GetString();
+
+            bool validUsername = false;
+            do
+            {
+                Console.WriteLine("Ange användarnamn: ");
+                player.PlayerName = Console.ReadLine();
+            } while (!validUsername);
+
+            bool gameProperties = false;
 
 
-            //} while (!connected);
-
-            //serverIP = UserInput.GetString();
-
-            //bool validUsername = false;
-            //do
-            //{
-            //    Console.WriteLine("Ange användarnamn: ");
-            //    player.PlayerName = Console.ReadLine();
-            //} while (!validUsername);
-
-            //bool gameProperties = false;
+            do
+            {
+                Console.WriteLine("Ange antal spelare: ");
+                int antalSpelare = Convert.ToInt32(Console.ReadLine());
 
 
-            //do
-            //{
-            //    Console.WriteLine("Ange antal spelare: ");
-            //    int antalSpelare = Convert.ToInt32(Console.ReadLine());
-
-
-            //} while (gameProperties);
+            } while (gameProperties);
 
             do
             {
