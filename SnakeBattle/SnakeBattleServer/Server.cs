@@ -7,6 +7,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using MessagesLibrary;
 
 namespace SnakeBattleServer
 {
@@ -55,6 +56,27 @@ namespace SnakeBattleServer
             }
         }
 
+        internal void PrivateSend(TcpClient tcpclient, string message)
+        {
+            NetworkStream n = tcpclient.GetStream();
+            BinaryWriter w = new BinaryWriter(n);
+            w.Write(message);
+            w.Flush();
+        }
+
+        internal bool CheckUserName(string name)
+        {
+
+            foreach (var tmpClient in clients)
+            {
+                if (tmpClient.UserName == name)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         public void Broadcast(ClientHandler client, string message)
         {
             foreach (ClientHandler tmpClient in clients)
@@ -75,6 +97,8 @@ namespace SnakeBattleServer
                 }
             }
         }
+
+
 
         public void DisconnectClient(ClientHandler client)
         {

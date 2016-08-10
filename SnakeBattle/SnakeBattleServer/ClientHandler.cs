@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MessagesLibrary;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -31,7 +32,19 @@ namespace SnakeBattleServer
                 {
                     NetworkStream n = tcpclient.GetStream();
                     message = new BinaryReader(n).ReadString();
-                    myServer.Broadcast(this, message);
+
+                    var msg = MessageHandler.Deserialize(message);
+
+                    if (msg.GetType() == typeof(UserNameMessage))
+                    {
+                        UserNameMessage response = new UserNameMessage(msg.UserName);
+                        response.UserNameConfirm = myServer.CheckUserName(msg.UserName);
+
+                        myServer.PrivateSend(tcpclient ,MessageHandler.Serialize( response));
+                        
+                    }
+
+                    //myServer.Broadcast(this, message);
                     Console.WriteLine(message);
                 }
 

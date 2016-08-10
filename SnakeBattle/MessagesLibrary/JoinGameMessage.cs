@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace MessagesLibrary
 {
-    class JoinGameMessage
+    class JoinGameMessage : Message
     {
+        public JoinGameMessage(string userName) : base (userName)
+        {
+
+        }
     }
 }

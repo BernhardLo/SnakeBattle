@@ -8,6 +8,10 @@ namespace MessagesLibrary
 {
     public class UserNameMessage : Message
     {
+        public UserNameMessage(string userName) : base (userName)
+        {
+            this.UserNameConfirm = false;
+        }
         public bool UserNameConfirm { get; set; }
     }
 }

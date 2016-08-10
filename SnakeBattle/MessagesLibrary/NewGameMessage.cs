@@ -8,6 +8,10 @@ namespace MessagesLibrary
 {
     public class NewGameMessage : Message
     {
+        public NewGameMessage(string userName) : base (userName)
+        {
+
+        }
         public int SizeX { get; set; }
         public int SizeY { get; set; }
         public int NumberPlayers { get; set; }

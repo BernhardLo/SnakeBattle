@@ -8,6 +8,10 @@ namespace MessagesLibrary
 {
     class PlayMessage : Message
     {
+        public PlayMessage(string userName) : base(userName)
+        {
+
+        }
         //Anger vilken spelomgång som pågår, också hjälp för severn att identifiera rätt svar
         public int TurnCount { get; set; }
         public int[] XMovements { get; set; }

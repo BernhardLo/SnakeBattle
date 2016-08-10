@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace MessagesLibrary
 {
-    public abstract class Message
+    class ErrorMessage : Message
     {
-        public Message(string userName)
+        public ErrorMessage(string userName) : base (userName)
         {
-            this.UserName = userName;
+
         }
-        public string UserName { get; set; }
+        public string EMessage { get; set; }
     }
 }

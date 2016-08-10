@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MessagesLibrary;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
@@ -112,6 +113,10 @@ namespace SnakeBattle
                 //usernamemessage = new usernamemessage (alla variabler)
                 //string message = json.serialize(usernamemessage)
                 //nwc.Send(message)
+                UserNameMessage unm = new UserNameMessage(name);
+                nwc.Send(MessageHandler.Serialize(unm));
+
+
             } catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
