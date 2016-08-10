@@ -39,7 +39,7 @@ namespace SnakeBattleServer
                     {
                         UserNameMessage response = new UserNameMessage(msg.UserName);
                         response.UserNameConfirm = myServer.CheckUserName(msg.UserName);
-
+                        this.UserName = response.UserName;
                         myServer.PrivateSend(tcpclient ,MessageHandler.Serialize( response));
                         
                     }

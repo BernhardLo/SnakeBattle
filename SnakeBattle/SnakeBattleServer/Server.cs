@@ -62,6 +62,7 @@ namespace SnakeBattleServer
             BinaryWriter w = new BinaryWriter(n);
             w.Write(message);
             w.Flush();
+            Console.WriteLine(message);
         }
 
         internal bool CheckUserName(string name)
