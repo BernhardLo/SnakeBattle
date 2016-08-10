@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace MessagesLibrary
 {
-    public class UserNameMessage : Message
+    public abstract class Message
     {
-        public bool UserNameConfirm { get; set; }
+        public string UserName { get; set; }
     }
 }

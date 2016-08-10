@@ -40,20 +40,10 @@ namespace SnakeBattle
 
         public void Play()
         {
-            bool connected = false;
-            do
-            {
-                serverIP = UserInput.GetIp();
+            //Ansluter till servern och skriver ut IP-adressen om det lyckades
+            Console.WriteLine(ConnectToServer());
 
-                if (nwc.Connect(serverIP, gamePort))
-                    connected = true;
-
-            } while (!connected);
-
-            Console.WriteLine(serverIP);
-
-            serverIP = UserInput.GetString();
-
+            Console.WriteLine(SetUserName());
             bool validUsername = false;
             do
             {
@@ -81,6 +71,54 @@ namespace SnakeBattle
 
             Console.WriteLine("Game Over");
         }
+
+        private string ConnectToServer ()
+        {
+            string serverIP = "";
+            bool connected = false;
+            do
+            {
+                serverIP = UserInput.GetIp();
+                if (nwc.Connect(serverIP, gamePort))
+                    connected = true;
+
+            } while (!connected);
+            return serverIP;
+        }
+
+        private string SetUserName()
+        {
+            string userName = "";
+            bool validUserName = false;
+            do
+            {
+                userName = UserInput.GetUserName();
+                if (RegisterUserName(userName))
+                {
+
+                }
+
+            } while (!validUserName);
+
+            return userName;
+        }
+
+        private bool RegisterUserName (string name)
+        {
+            bool valid = false;
+            try
+            {
+                //nwc.Send(MessageHandler.Serialize(new usernamemessage))
+                //usernamemessage = new usernamemessage (alla variabler)
+                //string message = json.serialize(usernamemessage)
+                //nwc.Send(message)
+            } catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return valid;
+        }
+
 
         public void DrawField()
         {

@@ -33,6 +33,26 @@ namespace SnakeBattle
             return ret;
         }
 
+        public static string GetUserName()
+        {
+            string userName = "";
+            bool valid = false;
+            do
+            {
+                Console.Write("Ange användarnamn: ");
+                userName = GetString();
+                if (!String.IsNullOrWhiteSpace(userName))
+                {
+                    //to do: inmatningskontroller för användarnamn
+                    if (true)
+                    {
+                        valid = true;
+                    }
+                }
+            } while (!valid);
+            return userName;
+        }
+
         public static string GetString()
         {
             string ret = "";

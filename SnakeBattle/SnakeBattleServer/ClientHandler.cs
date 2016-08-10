@@ -12,13 +12,14 @@ namespace SnakeBattleServer
 {
     class ClientHandler
     {
-
+        public string UserName { get; set; }
         public TcpClient tcpclient;
         private Server myServer;
         public ClientHandler(TcpClient c, Server server)
         {
             tcpclient = c;
             this.myServer = server;
+            this.UserName = "<empty>";
         }
 
         public void Run()

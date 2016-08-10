@@ -53,9 +53,23 @@ namespace SnakeBattle
             }
         }
 
-        public void Send()
+        public void Send(string message)
         {
+            try
+            {
+                NetworkStream nws = client.GetStream();
 
+                BinaryWriter bnw = new BinaryWriter(nws);
+                bnw.Write(message);
+                bnw.Flush();
+
+                if (message.Equals("quit"))
+                    client.Close();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
         }
 
     }

@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace MessagesLibrary
 {
-    public class UserNameMessage : Message
+    class JoinGameMessage
     {
-        public bool UserNameConfirm { get; set; }
     }
 }
