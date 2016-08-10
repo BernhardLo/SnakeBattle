@@ -47,25 +47,25 @@ namespace SnakeBattle
 
             //} while (!connected);
 
-            serverIP = UserInput.GetString();
+            //serverIP = UserInput.GetString();
 
-            bool validUsername = false;
-            do
-            {
-                Console.WriteLine("Ange användarnamn: ");
-                player.PlayerName = Console.ReadLine();
-            } while (!validUsername);
+            //bool validUsername = false;
+            //do
+            //{
+            //    Console.WriteLine("Ange användarnamn: ");
+            //    player.PlayerName = Console.ReadLine();
+            //} while (!validUsername);
 
-            bool gameProperties = false;
-
-
-            do
-            {
-                Console.WriteLine("Ange antal spelare: ");
-                int antalSpelare = Convert.ToInt32(Console.ReadLine());
+            //bool gameProperties = false;
 
 
-            } while (gameProperties);
+            //do
+            //{
+            //    Console.WriteLine("Ange antal spelare: ");
+            //    int antalSpelare = Convert.ToInt32(Console.ReadLine());
+
+
+            //} while (gameProperties);
 
             do
             {
