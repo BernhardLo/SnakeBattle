@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MessagesLibrary;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -13,7 +14,7 @@ namespace SnakeBattle
     class NetworkClient
     {
         private TcpClient serverClient;
-        private List<String> commandList = new List<String>();
+        private List<Message> _commandList = new List<Message>();
 
         public bool Connect(string ip, int port)
         {
@@ -44,12 +45,25 @@ namespace SnakeBattle
                     NetworkStream n = serverClient.GetStream();
                     message = new BinaryReader(n).ReadString();
 
-                    commandList.Add(message);
+                    CommandListAdd(message);
                 }
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
+            }
+        }
+
+        private void CommandListAdd(string message)
+        {
+            var msg = MessageHandler.Deserialize(message);
+            if (msg.GetType() == typeof(UserNameMessage))
+            {
+                _commandList.Add(msg);
+            }
+            else if (true)
+            {
+
             }
         }
 

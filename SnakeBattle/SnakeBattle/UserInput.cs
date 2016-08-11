@@ -68,7 +68,7 @@ namespace SnakeBattle
             return ret;
         }
 
-        public static int GetInt(string message, int min, int max)
+        public static int GetInt()
         {
             int ret = 0;
             try
@@ -78,13 +78,27 @@ namespace SnakeBattle
             catch (FormatException fex)
             {
                 Console.Write("Input is not integer.");
-
             }
             catch (Exception ex)
             {
                 Console.Write(ex.Message);
             }
             return ret;
+        }
+
+        public static int GetIntFiltered(string message, int min, int max)
+        {
+            int result;
+            bool valid = false;
+            do
+            {
+                Console.Write(message);
+                result = GetInt();
+                if (result >= min && result <= max)
+                    valid = true;
+
+            } while (!valid);
+            return result;
         }
     }
 }

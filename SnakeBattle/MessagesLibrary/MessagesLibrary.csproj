@@ -50,6 +50,7 @@
     <Compile Include="MessageHandler.cs" />
     <Compile Include="NewGameMessage.cs" />
     <Compile Include="PlayMessage.cs" />
+    <Compile Include="StartGameMessage.cs" />
     <Compile Include="UserNameMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
