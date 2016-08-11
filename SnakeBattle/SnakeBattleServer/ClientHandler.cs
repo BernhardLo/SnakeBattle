@@ -70,7 +70,9 @@ namespace SnakeBattleServer
             }
             catch (IOException)
             {
-                Console.WriteLine("Remote client disconnected: " + tcpclient.Client.AddressFamily.ToString());
+                Console.WriteLine(this.UserName + " Remote client disconnected.");
+                myServer.DisconnectClient(this);
+                tcpclient.Close();
                 //todo: Visa IP på användaren som lämnar och ta bort ur clientlistan
             }
             catch (Exception ex)

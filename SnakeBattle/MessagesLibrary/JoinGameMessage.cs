@@ -8,9 +8,8 @@ namespace MessagesLibrary
 {
     public class JoinGameMessage : Message
     {
-        //todo: proppar, svarsmeddelande (answer) + hostname
-
-
+        public string HostName { get; set; }
+        public bool Confirmed { get; set; }
 
         public JoinGameMessage(string userName) : base (userName)
         {

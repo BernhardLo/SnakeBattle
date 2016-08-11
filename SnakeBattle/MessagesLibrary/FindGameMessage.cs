@@ -13,7 +13,7 @@ namespace MessagesLibrary
 
         public FindGameMessage(string userName):base(userName)
         {
-
+            GamesAvailable = new List<GameRoom>();
         }
 
 

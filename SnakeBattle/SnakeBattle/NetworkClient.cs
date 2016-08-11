@@ -66,7 +66,7 @@ namespace SnakeBattle
             else if (msg is FindGameMessage)
             {
                 _commandList.Add(msg);
-                Console.WriteLine("Nu kom det en lista av spelrum");
+                Console.WriteLine("Nu kom det en lista av spelrum"); //todo: "test
                 
             }
             else if (msg is StartGameMessage)

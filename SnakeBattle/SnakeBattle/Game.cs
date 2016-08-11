@@ -98,6 +98,20 @@ namespace SnakeBattle
         private void ListAvailableGames()
         {
             _nwc.Send(MessageHandler.Serialize(new FindGameMessage(_player.PlayerName)));
+            var gameList = GetGameRooms();
+            PrintGameRooms(gameList);
+        }
+
+        private void PrintGameRooms(List<GameRoom> gameList)
+        {
+            if (gameList.Count == 0)
+            {
+                Console.WriteLine("Det finns inga tillgängliga spel.");
+            } else
+                foreach (var item in gameList)
+                {
+                    Console.WriteLine($"{item.HostName} - {item.Gamers.Count} / {item.NumberOfPlayers}");
+                }
         }
 
         private void NewGameRoom()
@@ -198,6 +212,35 @@ namespace SnakeBattle
                 }
             } while (!valid);
             return false;
+        }
+
+        private List<GameRoom> GetGameRooms ()
+        {
+            Stopwatch myclock = new Stopwatch();
+            myclock.Start();
+            do
+            {
+                Thread.Sleep(50);
+                foreach (var item in _nwc._commandList)
+                {
+                    if (item is FindGameMessage)
+                    {
+                        FindGameMessage tmp = item as FindGameMessage;
+                        Console.WriteLine("time used: " + myclock.ElapsedMilliseconds);
+                        List<GameRoom> result = tmp.GamesAvailable;
+                        Console.WriteLine("removing FindGameMessage"); //todo: "test"
+                        _nwc._commandList.Remove(tmp);
+                        return result;
+                    }
+                }
+
+
+                if (myclock.ElapsedMilliseconds > 10000)
+                {
+                    Console.WriteLine("UserNameValidated timeout");
+                    return new List<GameRoom>();
+                }
+            } while (true);
         }
 
         private bool RegisterUserName(string name)
