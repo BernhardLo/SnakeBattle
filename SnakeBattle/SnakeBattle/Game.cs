@@ -1,9 +1,11 @@
 ﻿using MessagesLibrary;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SnakeBattle
@@ -164,29 +166,29 @@ namespace SnakeBattle
         private bool UserNameValidated(string userName)
         {
             bool valid = false;
+            Stopwatch myclock = new Stopwatch();
+            myclock.Start();
             do
             {
+                Thread.Sleep(50);
                 foreach (var item in _nwc._commandList)
                 {
                     if (item is UserNameMessage)
                     {
                         UserNameMessage tmp = item as UserNameMessage;
-                        if (tmp.UserNameConfirm)
-                        {
-                            //todo: returhantering användarnamn
-                        }
+                        Console.WriteLine("time used: " + myclock.ElapsedMilliseconds);
+                        return tmp.UserNameConfirm;
                     }
                 }
 
+                
+                if (myclock.ElapsedMilliseconds > 10000)
+                {
+                    Console.WriteLine("UserNameValidated timeout");
+                    return false;
+                }
             } while (!valid);
-
-            if (true)
-            {
-
-            }
-            return true;
-
-            //todo: Kontrollera om servern godkänner användarnamnet
+            return false;
 
         }
 

@@ -45,6 +45,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ErrorMessage.cs" />
+    <Compile Include="FindGameMessage.cs" />
+    <Compile Include="GameRoom.cs" />
     <Compile Include="JoinGameMessage.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="MessageHandler.cs" />

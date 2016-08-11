@@ -35,16 +35,24 @@ namespace SnakeBattleServer
                     Console.WriteLine(message);
                     var msg = MessageHandler.Deserialize(message);
 
-                    if (msg.GetType() == typeof(UserNameMessage))
+                    if (msg is UserNameMessage)
                     {
-                        UserNameMessage response = new UserNameMessage(msg.UserName);
+                        UserNameMessage response = msg as UserNameMessage;
                         response.UserNameConfirm = myServer.CheckUserName(msg.UserName);
                         this.UserName = response.UserName;
                         myServer.PrivateSend(tcpclient, MessageHandler.Serialize(response));
                     }
+                    else if (msg is NewGameMessage)
+                    {
+                        NewGameMessage tmp = msg as NewGameMessage;
+                        GameRoom room = new GameRoom() { HostName = tmp.UserName, GameMode = tmp.GameMode, NumberOfPlayers = tmp.NumberPlayers };
+                        room.Gamers.Add(tmp.UserName);
+                        myServer._games.Add(room);
 
-                    //myServer.Broadcast(this, message);
+                    }
                 }
+                //myServer.Broadcast(this, message);
+
 
                 myServer.DisconnectClient(this);
                 tcpclient.Close();

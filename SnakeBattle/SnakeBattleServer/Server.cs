@@ -13,7 +13,8 @@ namespace SnakeBattleServer
 {
     class Server
     {
-        List<ClientHandler> clients = new List<ClientHandler>();
+        List<ClientHandler> _clients = new List<ClientHandler>();
+        public List<GameRoom> _games = new List<GameRoom>();
         public void Run()
         {
             TcpListener listener = new TcpListener(IPAddress.Any, 5000);
@@ -39,7 +40,7 @@ namespace SnakeBattleServer
                 {
                     TcpClient c = listener.AcceptTcpClient();
                     ClientHandler newClient = new ClientHandler(c, this);
-                    clients.Add(newClient);
+                    _clients.Add(newClient);
 
                     Thread clientThread = new Thread(newClient.Run);
                     clientThread.Start();
@@ -68,7 +69,7 @@ namespace SnakeBattleServer
         internal bool CheckUserName(string name)
         {
 
-            foreach (var tmpClient in clients)
+            foreach (var tmpClient in _clients)
             {
                 if (tmpClient.UserName == name)
                 {
@@ -80,7 +81,7 @@ namespace SnakeBattleServer
 
         public void Broadcast(ClientHandler client, string message)
         {
-            foreach (ClientHandler tmpClient in clients)
+            foreach (ClientHandler tmpClient in _clients)
             {
                 if (tmpClient != client)
                 {
@@ -89,7 +90,7 @@ namespace SnakeBattleServer
                     w.Write(message);
                     w.Flush();
                 }
-                else if (clients.Count() == 1)
+                else if (_clients.Count() == 1)
                 {
                     NetworkStream n = tmpClient.tcpclient.GetStream();
                     BinaryWriter w = new BinaryWriter(n);
@@ -103,7 +104,7 @@ namespace SnakeBattleServer
 
         public void DisconnectClient(ClientHandler client)
         {
-            clients.Remove(client);
+            _clients.Remove(client);
             Console.WriteLine("Client X has left the building...");
             Broadcast(client, "Client X has left the building...");
         }

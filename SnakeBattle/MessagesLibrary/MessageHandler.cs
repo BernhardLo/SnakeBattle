@@ -20,6 +20,8 @@ namespace MessagesLibrary
                 command = "pm";
             else if (obj.GetType() == typeof(JoinGameMessage))
                 command = "jg";
+            else if(obj.GetType() == typeof(FindGameMessage))
+                command = "fg";
             else
                 command = "er";
 
@@ -42,6 +44,8 @@ namespace MessagesLibrary
                 result = JsonConvert.DeserializeObject<JoinGameMessage>(message);
             else if (commandType == "er")
                 result = JsonConvert.DeserializeObject<ErrorMessage>(message);
+            else if (commandType == "fg")
+                result = JsonConvert.DeserializeObject<FindGameMessage>(message);
             else
                 result = new ErrorMessage ("Error"){ EMessage = "Something went terribly wrong" };
 
