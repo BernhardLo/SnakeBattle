@@ -93,7 +93,7 @@ namespace SnakeBattle
             Console.WriteLine("Game Over");
         }
 
-        private void NewGameRoom ()
+        private void NewGameRoom()
         {
             int numberOfPlayers = UserInput.GetIntFiltered("Ange antal spelare", 2, 4);
 
@@ -121,7 +121,7 @@ namespace SnakeBattle
         /// connects to the server with that address
         /// </summary>
         /// <returns>string representation of ip adress</returns>
-        private string ConnectToServer ()
+        private string ConnectToServer()
         {
             string serverIP = "";
             bool connected = false;
@@ -163,6 +163,23 @@ namespace SnakeBattle
 
         private bool UserNameValidated(string userName)
         {
+            bool valid = false;
+            do
+            {
+                foreach (var item in _nwc._commandList)
+                {
+                    if (item is UserNameMessage)
+                    {
+                        UserNameMessage tmp = item as UserNameMessage;
+                        if (tmp.UserNameConfirm)
+                        {
+                            //todo: returhantering användarnamn
+                        }
+                    }
+                }
+
+            } while (!valid);
+
             if (true)
             {
 
@@ -173,7 +190,7 @@ namespace SnakeBattle
 
         }
 
-        private bool RegisterUserName (string name)
+        private bool RegisterUserName(string name)
         {
             try
             {
@@ -181,13 +198,14 @@ namespace SnakeBattle
                 _nwc.Send(MessageHandler.Serialize(unm));
                 return true;
 
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
                 return false;
             }
 
-            
+
         }
 
         public void DrawField()

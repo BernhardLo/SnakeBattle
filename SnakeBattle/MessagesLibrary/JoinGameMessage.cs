@@ -6,8 +6,12 @@ using System.Threading.Tasks;
 
 namespace MessagesLibrary
 {
-    class JoinGameMessage : Message
+    public class JoinGameMessage : Message
     {
+        //todo: proppar, svarsmeddelande (answer) + hostname
+
+
+
         public JoinGameMessage(string userName) : base (userName)
         {
 

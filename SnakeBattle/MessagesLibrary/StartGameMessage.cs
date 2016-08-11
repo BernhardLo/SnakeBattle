@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MessagesLibrary
 {
-    class StartGameMessage : Message
+   public class StartGameMessage : Message
     {
         public StartGameMessage(string userName) : base (userName)
         {

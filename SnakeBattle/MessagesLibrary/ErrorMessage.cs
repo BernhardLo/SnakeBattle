@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MessagesLibrary
 {
-    class ErrorMessage : Message
+    public class ErrorMessage : Message
     {
         public ErrorMessage(string userName) : base (userName)
         {

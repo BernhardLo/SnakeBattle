@@ -14,7 +14,7 @@ namespace SnakeBattle
     class NetworkClient
     {
         private TcpClient serverClient;
-        private List<Message> _commandList = new List<Message>();
+        public List<Message> _commandList = new List<Message>();
 
         public bool Connect(string ip, int port)
         {
@@ -60,11 +60,25 @@ namespace SnakeBattle
             if (msg.GetType() == typeof(UserNameMessage))
             {
                 _commandList.Add(msg);
+                Console.WriteLine("Nu kom det ett username-message"); //todo: "Test"
             }
-            else if (true)
+            else if (msg.GetType() == typeof(StartGameMessage))
             {
-
+                _commandList.Add(msg); // todo: Kolla om hostname är aktuellt
             }
+            else if (msg.GetType() == typeof(PlayMessage))
+            {
+                _commandList.Add(msg); // todo: Kolla om hostname är aktuellt
+            }
+            else if (msg.GetType() == typeof(JoinGameMessage))
+            {
+                _commandList.Add(msg); // todo: Kolla om hostname är aktuellt
+            }
+            else if (msg.GetType() == typeof(ErrorMessage))
+            {
+                _commandList.Add(msg); // todo: Kolla om hostname är aktuellt
+            }
+
         }
 
         public void Send(string message)

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MessagesLibrary
 {
-    class PlayMessage : Message
+    public class PlayMessage : Message
     {
         public PlayMessage(string userName) : base(userName)
         {
