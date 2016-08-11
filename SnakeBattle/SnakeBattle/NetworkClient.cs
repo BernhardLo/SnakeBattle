@@ -57,24 +57,31 @@ namespace SnakeBattle
         private void CommandListAdd(string message)
         {
             var msg = MessageHandler.Deserialize(message);
-            if (msg.GetType() == typeof(UserNameMessage))
+            if (msg is UserNameMessage)
             {
+                Console.WriteLine("adding " +msg.UserName); //todo: "test"
                 _commandList.Add(msg);
                 Console.WriteLine("Nu kom det ett username-message"); //todo: "Test"
             }
-            else if (msg.GetType() == typeof(StartGameMessage))
+            else if (msg is FindGameMessage)
+            {
+                _commandList.Add(msg);
+                Console.WriteLine("Nu kom det en lista av spelrum");
+                
+            }
+            else if (msg is StartGameMessage)
             {
                 _commandList.Add(msg); // todo: Kolla om hostname är aktuellt
             }
-            else if (msg.GetType() == typeof(PlayMessage))
+            else if (msg is PlayMessage)
             {
                 _commandList.Add(msg); // todo: Kolla om hostname är aktuellt
             }
-            else if (msg.GetType() == typeof(JoinGameMessage))
+            else if (msg is JoinGameMessage)
             {
                 _commandList.Add(msg); // todo: Kolla om hostname är aktuellt
             }
-            else if (msg.GetType() == typeof(ErrorMessage))
+            else if (msg is ErrorMessage)
             {
                 _commandList.Add(msg); // todo: Kolla om hostname är aktuellt
             }

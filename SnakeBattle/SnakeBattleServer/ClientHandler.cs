@@ -48,8 +48,18 @@ namespace SnakeBattleServer
                         GameRoom room = new GameRoom() { HostName = tmp.UserName, GameMode = tmp.GameMode, NumberOfPlayers = tmp.NumberPlayers };
                         room.Gamers.Add(tmp.UserName);
                         myServer._games.Add(room);
+                    }
+                    else if (msg is FindGameMessage)
+                    {
+                        FindGameMessage tmp = msg as FindGameMessage;
+                        foreach (var item in myServer._games)
+                        {
+                            tmp.GamesAvailable.Add(item);
+                        }
+                        myServer.PrivateSend(tcpclient, MessageHandler.Serialize(tmp));
 
                     }
+
                 }
                 //myServer.Broadcast(this, message);
 

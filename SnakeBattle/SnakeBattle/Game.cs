@@ -75,7 +75,7 @@ namespace SnakeBattle
                         break;
                     case 4:
                         Console.WriteLine("Visa tillgängliga spel");
-                        Console.WriteLine("TBD");
+                        ListAvailableGames();
                         //todo: visa spel
                         break;
                     default:
@@ -93,6 +93,11 @@ namespace SnakeBattle
             } while (_player.IsAlive);
 
             Console.WriteLine("Game Over");
+        }
+
+        private void ListAvailableGames()
+        {
+            _nwc.Send(MessageHandler.Serialize(new FindGameMessage(_player.PlayerName)));
         }
 
         private void NewGameRoom()
@@ -154,6 +159,7 @@ namespace SnakeBattle
                     if (UserNameValidated(userName))
                     {
                         _player.PlayerName = userName;
+                        // todo: ta bort rätt UserNameMessage ur _commandlist, kanske funkar nu
                         validUserName = true;
                     }
                 }
@@ -177,7 +183,10 @@ namespace SnakeBattle
                     {
                         UserNameMessage tmp = item as UserNameMessage;
                         Console.WriteLine("time used: " + myclock.ElapsedMilliseconds);
-                        return tmp.UserNameConfirm;
+                        bool result = tmp.UserNameConfirm;
+                        Console.WriteLine("removing " +tmp.UserName); //todo: "test"
+                        _nwc._commandList.Remove(tmp);
+                        return result;
                     }
                 }
 
@@ -189,7 +198,6 @@ namespace SnakeBattle
                 }
             } while (!valid);
             return false;
-
         }
 
         private bool RegisterUserName(string name)
