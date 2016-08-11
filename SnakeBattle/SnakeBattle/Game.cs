@@ -66,6 +66,8 @@ namespace SnakeBattle
                     case 2:
                         Console.WriteLine("Anslut till spel");
                         Console.WriteLine("TBD");
+                        ListAvailableGames();
+                        ChooseGameRoom();
                         //todo: anslut till spel
                         break;
                     case 3:
@@ -95,11 +97,20 @@ namespace SnakeBattle
             Console.WriteLine("Game Over");
         }
 
+        private void ChooseGameRoom()
+        {
+            string hostName = UserInput.GetString(); //todo: kontrollera att det finns ett spelrum
+
+            var msg = new JoinGameMessage(_player.PlayerName) { HostName = hostName };
+            _nwc.Send(MessageHandler.Serialize(msg));
+        }
+
         private void ListAvailableGames()
         {
             _nwc.Send(MessageHandler.Serialize(new FindGameMessage(_player.PlayerName)));
             var gameList = GetGameRooms();
             PrintGameRooms(gameList);
+
         }
 
         private void PrintGameRooms(List<GameRoom> gameList)
@@ -107,7 +118,8 @@ namespace SnakeBattle
             if (gameList.Count == 0)
             {
                 Console.WriteLine("Det finns inga tillgängliga spel.");
-            } else
+            }
+            else
                 foreach (var item in gameList)
                 {
                     Console.WriteLine($"{item.HostName} - {item.Gamers.Count} / {item.NumberOfPlayers}");
@@ -116,7 +128,8 @@ namespace SnakeBattle
 
         private void NewGameRoom()
         {
-            int numberOfPlayers = UserInput.GetIntFiltered("Ange antal spelare", 2, 4);
+            int numberOfPlayers = UserInput.GetIntFiltered("Ange antal spelare: ", 2, 4);
+
 
             //todo: ange spelplanens storlek
             //int sizeX = UserInput.GetIntFiltered("Ange spelplanens storlek (X)", 10, 20);
@@ -135,6 +148,7 @@ namespace SnakeBattle
             };
 
             _nwc.Send(MessageHandler.Serialize(ngm));
+            WaitingRoom();
         }
 
         /// <summary>
@@ -198,13 +212,13 @@ namespace SnakeBattle
                         UserNameMessage tmp = item as UserNameMessage;
                         Console.WriteLine("time used: " + myclock.ElapsedMilliseconds);
                         bool result = tmp.UserNameConfirm;
-                        Console.WriteLine("removing " +tmp.UserName); //todo: "test"
+                        Console.WriteLine("removing " + tmp.UserName); //todo: "test"
                         _nwc._commandList.Remove(tmp);
                         return result;
                     }
                 }
 
-                
+
                 if (myclock.ElapsedMilliseconds > 10000)
                 {
                     Console.WriteLine("UserNameValidated timeout");
@@ -214,7 +228,7 @@ namespace SnakeBattle
             return false;
         }
 
-        private List<GameRoom> GetGameRooms ()
+        private List<GameRoom> GetGameRooms()
         {
             Stopwatch myclock = new Stopwatch();
             myclock.Start();
@@ -357,6 +371,41 @@ namespace SnakeBattle
             Console.WriteLine("2: Anslut till spel");
             Console.WriteLine("3: Byt användarnamn");
             Console.WriteLine("4: Visa tillgängliga spel");
+        }
+        private void WaitingRoom()
+        {
+            bool valid = false;
+            Stopwatch myclock = new Stopwatch();
+            myclock.Start();
+            Console.WriteLine("Testtest");
+            do
+            {
+                //while (!Console.KeyAvailable)
+                //{
+                    Thread.Sleep(50);
+                    foreach (var item in _nwc._commandList)
+                    {
+                        if (item is StartGameMessage)
+                        {
+                            StartGameMessage tmp = item as StartGameMessage;
+                            Console.WriteLine("time used: " + myclock.ElapsedMilliseconds);//todo: "test"
+
+                            Console.WriteLine("removing StartGameMessage"); //todo: "test"
+                            _nwc._commandList.Remove(tmp);
+                            valid = true;
+                        }
+              
+                    }
+                if (myclock.ElapsedMilliseconds > 500000)
+                {
+                    Console.WriteLine("StartGameLobby timeout");
+                    valid = true;
+
+                }
+                //}
+
+            } while (/*Console.ReadKey(true).Key != ConsoleKey.Escape || */!valid); // todo: Lyssna efter escape
+
         }
     }
 }

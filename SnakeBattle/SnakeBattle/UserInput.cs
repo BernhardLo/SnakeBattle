@@ -70,7 +70,7 @@ namespace SnakeBattle
 
         public static int GetInt()
         {
-            int ret = 0;
+            int ret = 9;
             try
             {
                 ret = Convert.ToInt32(Console.ReadLine());
