@@ -79,24 +79,15 @@ namespace SnakeBattleServer
             return true;
         }
 
-        public void Broadcast(ClientHandler client, string message)
+        public void Broadcast(string message)
         {
+            Console.WriteLine("Broadcasting: " +message);
             foreach (ClientHandler tmpClient in _clients)
             {
-                if (tmpClient != client)
-                {
-                    NetworkStream n = tmpClient.tcpclient.GetStream();
-                    BinaryWriter w = new BinaryWriter(n);
-                    w.Write(message);
-                    w.Flush();
-                }
-                else if (_clients.Count() == 1)
-                {
-                    NetworkStream n = tmpClient.tcpclient.GetStream();
-                    BinaryWriter w = new BinaryWriter(n);
-                    w.Write("Sorry, you are alone...");
-                    w.Flush();
-                }
+                NetworkStream n = tmpClient.tcpclient.GetStream();
+                BinaryWriter w = new BinaryWriter(n);
+                w.Write(message);
+                w.Flush();
             }
         }
 
@@ -105,6 +96,36 @@ namespace SnakeBattleServer
             Console.WriteLine(client.UserName + " has left the building...");
             //Broadcast(client, "Client X has left the building...");
             _clients.Remove(client);
+        }
+
+        internal void SendStartGameMessage(string hostName)
+        {
+            GameRoom gr = _games.Where(c => c.HostName == hostName).SingleOrDefault();
+            List<string> tmpStartPosList = new List<string>();
+            List<int> tmpColorList = new List<int>();
+            string tmpStartingPlayer = gr.Gamers[1]; //todo: slumpa startspelare
+            int xPos = 1;
+            int yPos = 1;
+
+            //todo: slumpa ut startpositioner
+
+            for (int i = 0; i < gr.NumberOfPlayers; i++)
+            {
+                tmpStartPosList.Add("0" + xPos.ToString() + "0" + yPos.ToString());
+                yPos+=2; xPos+=2;
+                tmpColorList.Add(i);
+            }
+
+            gr.PlayerStartPositions = tmpStartPosList;
+            gr.PlayerColors = tmpColorList;
+            gr.StartingPlayer = tmpStartingPlayer;
+
+            StartGameMessage sgm = new StartGameMessage(hostName)
+            {
+                GameRoomInfo = gr
+            };
+
+            Broadcast(MessageHandler.Serialize(sgm));
         }
     }
 }

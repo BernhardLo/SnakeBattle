@@ -69,7 +69,6 @@ namespace SnakeBattle
                         Console.WriteLine("Anslut till spel");
                         ListAvailableGames();
                         JoinAGame();
-                        //todo: anslut till spel
                         break;
                     case 3:
                         Console.WriteLine("Byt användarnamn");
@@ -106,11 +105,13 @@ namespace SnakeBattle
                 {
                     Console.WriteLine("Nu sätter vi oss och väntar"); //todo: "test"
                     WaitingRoom();
-                } else
+                }
+                else
                 {
                     Console.WriteLine("Det gick inte att joina"); //todo :"test"
                 }
-            } else
+            }
+            else
             {
                 Console.WriteLine("Det gick inte att skicka"); //todo: "test"
             }
@@ -156,15 +157,17 @@ namespace SnakeBattle
 
         private bool ChooseGameRoom()
         {
+            Console.Write("Ange spelrummets namn: ");
             string hostName = UserInput.GetString(); //todo: kontrollera att det finns ett spelrum
             var msg = new JoinGameMessage(_player.PlayerName) { HostName = hostName };
             try
             {
                 _nwc.Send(MessageHandler.Serialize(msg));
                 return true;
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
-                Console.WriteLine("Sending JoinGameMessage Failed: " +ex.Message);
+                Console.WriteLine("Sending JoinGameMessage Failed: " + ex.Message);
                 return false;
             }
         }
@@ -193,8 +196,6 @@ namespace SnakeBattle
         private void NewGameRoom()
         {
             int numberOfPlayers = UserInput.GetIntFiltered("Ange antal spelare: ", 2, 4);
-
-
             //todo: ange spelplanens storlek
             //int sizeX = UserInput.GetIntFiltered("Ange spelplanens storlek (X)", 10, 20);
             //int sizeY = UserInput.GetIntFiltered("Ange spelplanens storlek (Y)", 10, 20);
@@ -211,7 +212,18 @@ namespace SnakeBattle
                 GameMode = 0
             };
 
-            _nwc.Send(MessageHandler.Serialize(ngm));
+            try
+            {
+                _nwc.Send(MessageHandler.Serialize(ngm));
+                _currentGame.HostName  = _player.PlayerName;
+                _nwc._filterHostName = _player.PlayerName;
+                Console.WriteLine("NewGameRoom succeded"); //todo: "test"
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("NewGameRoom failed: " + ex.Message);
+            }
+            Console.WriteLine("Väntar på fler spelare...");
             WaitingRoom();
         }
 
@@ -446,20 +458,22 @@ namespace SnakeBattle
             {
                 //while (!Console.KeyAvailable)
                 //{
-                    Thread.Sleep(50);
-                    foreach (var item in _nwc._commandList)
+                Thread.Sleep(50);
+                foreach (var item in _nwc._commandList)
+                {
+                    if (item is StartGameMessage)
                     {
-                        if (item is StartGameMessage)
-                        {
-                            StartGameMessage tmp = item as StartGameMessage;
-                            Console.WriteLine("time used: " + myclock.ElapsedMilliseconds);//todo: "test"
+                        StartGameMessage tmp = item as StartGameMessage;
+                        Console.WriteLine("time used: " + myclock.ElapsedMilliseconds);//todo: "test"
 
-                            Console.WriteLine("removing StartGameMessage"); //todo: "test"
-                            _nwc._commandList.Remove(tmp);
-                            valid = true;
-                        }
-              
+                        SetGameProperties(tmp);
+
+                        Console.WriteLine("removing StartGameMessage from commandlist"); //todo: "test"
+                        _nwc._commandList.Remove(tmp);
+                        valid = true;
                     }
+
+                }
                 if (myclock.ElapsedMilliseconds > 500000)
                 {
                     Console.WriteLine("StartGameLobby timeout");
@@ -470,6 +484,12 @@ namespace SnakeBattle
 
             } while (/*Console.ReadKey(true).Key != ConsoleKey.Escape || */!valid); // todo: Lyssna efter escape
 
+        }
+
+        private void SetGameProperties(StartGameMessage tmp)
+        {
+            Console.WriteLine("Received: " + MessageHandler.Serialize(tmp));
+            _currentGame = tmp.GameRoomInfo;
         }
     }
 }

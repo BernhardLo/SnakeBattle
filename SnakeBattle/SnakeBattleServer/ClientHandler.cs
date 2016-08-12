@@ -62,12 +62,27 @@ namespace SnakeBattleServer
                     else if (msg is JoinGameMessage)
                     {
                         JoinGameMessage tmp = msg as JoinGameMessage;
+                        bool gameOn = false;
                         foreach (var item in myServer._games)
                         {
                             if (tmp.HostName == item.HostName)
-                                tmp.Confirmed = true;
+                                if (item.Gamers.Count == item.NumberOfPlayers - 1)
+                                {
+                                    item.Gamers.Add(tmp.UserName);
+                                    tmp.Confirmed = true;
+                                    gameOn = true;
+                                }
+                                else if (item.Gamers.Count < item.NumberOfPlayers)
+                                {
+                                    item.Gamers.Add(tmp.UserName);
+                                    tmp.Confirmed = true;
+                                }
                         }
                         myServer.PrivateSend(tcpclient, MessageHandler.Serialize(tmp));
+                        if (gameOn)
+                        {
+                            myServer.SendStartGameMessage(tmp.HostName);
+                        }
                     }
 
                 }

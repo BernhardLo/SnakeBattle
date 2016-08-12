@@ -73,7 +73,10 @@ namespace SnakeBattle
             }
             else if (msg is StartGameMessage)
             {
-                _commandList.Add(msg); // todo: Kolla om hostname är aktuellt
+                Console.WriteLine("Nu kom det ett startgamemessage"); //todo: "test"
+                if (msg.UserName == _filterHostName)
+                    _commandList.Add(msg); // todo: Kolla om hostname är aktuellt
+
             }
             else if (msg is PlayMessage)
             {
