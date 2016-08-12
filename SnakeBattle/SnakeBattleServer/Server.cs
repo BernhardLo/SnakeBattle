@@ -113,7 +113,7 @@ namespace SnakeBattleServer
             {
                 gr.PlayerList[i].Xpos = xPos;
                 gr.PlayerList[i].Ypos = yPos;
-                yPos+=2; xPos+=2;
+                yPos+=4; xPos+=4;
                 gr.PlayerList[i].Color = tmpColors[i];
             }
             gr.StartingPlayer = tmpStartingPlayer;

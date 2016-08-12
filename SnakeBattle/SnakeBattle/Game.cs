@@ -496,13 +496,26 @@ namespace SnakeBattle
 
             do
             {
+                if (_currentGame.StartingPlayer == _player.PlayerName)
+                { //todo: fixa antal steg per tur lite snyggare
+                    HandleMovement();
+                    DrawField();
+                    HandleMovement();
+                    DrawField();
+                    HandleMovement();
+                    DrawField();
+                }
                 DrawField();
                 //SendPlayMessage();
-                HandleMovement();
 
             } while (_player.IsAlive);
 
             Console.WriteLine("Game Over");
+        }
+
+        private bool WaitForTurn()
+        {
+            throw new NotImplementedException();
         }
 
         private void InsertPlayers()
@@ -518,7 +531,7 @@ namespace SnakeBattle
         {
             Console.WriteLine("Received: " + MessageHandler.Serialize(tmp));
             _currentGame = tmp.GameRoomInfo;
-            Console.ReadKey();
+            _player = _currentGame.PlayerList.Where(p => p.PlayerName == _player.PlayerName).SingleOrDefault();
         }
     }
 }
