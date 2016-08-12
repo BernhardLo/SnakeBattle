@@ -14,7 +14,8 @@ namespace MessagesLibrary
         }
         //Anger vilken spelomgång som pågår, också hjälp för severn att identifiera rätt svar
         public int TurnCount { get; set; }
-        public List<string> Movements { get; set; }
+        public string HostName { get; set; }
+        public List<int[]> MoveList { get; set; }
         public bool IsAlive { get; set; }
         public string NextUser { get; set; }
         public int PowerUp { get; set; }

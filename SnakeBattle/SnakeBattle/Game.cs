@@ -392,11 +392,12 @@ namespace SnakeBattle
                 Console.Write("¯¯");
         }
 
-        public void HandleMovement()
+        public int[] HandleMovement()
         {
             ConsoleKeyInfo keyInfo = Console.ReadKey(true);
             int newX = _player.Xpos;
             int newY = _player.Ypos;
+            int[] result = new int[2] { -1, -1 };
 
             switch (keyInfo.Key)
             {
@@ -428,12 +429,17 @@ namespace SnakeBattle
                     _playField[newX, newY].isOccupied = true;
                     _player.Xpos = newX;
                     _player.Ypos = newY;
+                    result[0] = newX;
+                    result[1] = newY;
+
                 }
             }
             catch (IndexOutOfRangeException IORex)
             {
                 _player.IsAlive = false;
             }
+
+            return result;
         }
 
         private void PrintMenu()
@@ -493,9 +499,28 @@ namespace SnakeBattle
             CreatePlayField();
             InsertPlayers();
             DrawField();
+            PlayMessage pm = new PlayMessage(_player.PlayerName);
+
+            if (_currentGame.StartingPlayer == _player.PlayerName)
+            {
+                List<int[]> moveList = new List<int[]>();
+                moveList.Add(HandleMovement());
+                DrawField();
+                moveList.Add(HandleMovement());
+                DrawField();
+                moveList.Add(HandleMovement());
+                DrawField();
+
+                pm.MoveList = moveList;
+                pm.IsAlive = _player.IsAlive;
+                pm.HostName = _currentGame.HostName;
+                _nwc.Send(MessageHandler.Serialize(pm));
+            }
 
             do
             {
+                PlayMessage apm = WaitForPlayMessage();
+                Console.WriteLine(apm.ToString());
                 if (_currentGame.StartingPlayer == _player.PlayerName)
                 { //todo: fixa antal steg per tur lite snyggare
                     HandleMovement();
@@ -506,11 +531,45 @@ namespace SnakeBattle
                     DrawField();
                 }
                 DrawField();
-                //SendPlayMessage();
 
             } while (_player.IsAlive);
 
             Console.WriteLine("Game Over");
+        }
+
+        private PlayMessage WaitForPlayMessage()
+        {
+            {
+                bool valid = false;
+                Stopwatch myclock = new Stopwatch();
+                myclock.Start();
+                PlayMessage tmp = new PlayMessage("<empty>");
+
+                do
+                {
+                    Thread.Sleep(50);
+                    foreach (var item in _nwc._commandList)
+                    {
+                        if (item is PlayMessage)
+                        {
+                            tmp = item as PlayMessage;
+                            Console.WriteLine("PlayMessage received: " + myclock.ElapsedMilliseconds);
+                            PlayMessage result = new PlayMessage(item.UserName);
+                            result = tmp;
+                            _nwc._commandList.Remove(item);
+                            return result;
+                        }
+                    }
+
+
+                    if (myclock.ElapsedMilliseconds > 45000)
+                    {
+                        Console.WriteLine("GameRoomValidated timeout");
+                        return tmp;
+                    }
+                } while (!valid);
+                return tmp;
+            }
         }
 
         private bool WaitForTurn()

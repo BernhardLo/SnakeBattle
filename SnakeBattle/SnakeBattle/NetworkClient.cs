@@ -81,7 +81,9 @@ namespace SnakeBattle
             }
             else if (msg is PlayMessage)
             {
-                _commandList.Add(msg); // todo: Kolla om hostname är aktuellt
+                PlayMessage tmp = msg as PlayMessage;
+                if (tmp.UserName != _filterUserName && tmp.HostName == _filterHostName)
+                    _commandList.Add(msg); // todo: Kolla om hostname är aktuellt
             }
             else if (msg is JoinGameMessage)
             {
