@@ -65,7 +65,7 @@ namespace SnakeBattleServer
             GameRoom gr = _games.Where(g => g.HostName == pm.HostName).SingleOrDefault();
             Player temp = gr.PlayerList.Where(p => p.PlayerName == pm.UserName).SingleOrDefault();
             int j = gr.PlayerList.IndexOf(temp);
-            if (j == gr.PlayerList.Count)
+            if (j == gr.PlayerList.Count-1)
                 j = 0;
             else
                 j += 1;
