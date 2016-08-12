@@ -59,6 +59,16 @@ namespace SnakeBattleServer
                         myServer.PrivateSend(tcpclient, MessageHandler.Serialize(tmp));
 
                     }
+                    else if (msg is JoinGameMessage)
+                    {
+                        JoinGameMessage tmp = msg as JoinGameMessage;
+                        foreach (var item in myServer._games)
+                        {
+                            if (tmp.HostName == item.HostName)
+                                tmp.Confirmed = true;
+                        }
+                        myServer.PrivateSend(tcpclient, MessageHandler.Serialize(tmp));
+                    }
 
                 }
                 //myServer.Broadcast(this, message);

@@ -13,8 +13,10 @@ namespace SnakeBattle
 {
     class NetworkClient
     {
-        private TcpClient serverClient;
+        private TcpClient _serverClient;
         public List<Message> _commandList = new List<Message>();
+        internal string _filterUserName = "<empty>";
+        internal string _filterHostName = "<empty>";
 
         public bool Connect(string ip, int port)
         {
@@ -22,7 +24,7 @@ namespace SnakeBattle
 
             try
             {
-                serverClient = new TcpClient(ip, port);
+                _serverClient = new TcpClient(ip, port);
                 Thread listenerThread = new Thread(Listen);
                 listenerThread.Start();
                 connectSucceeded = true;
@@ -42,7 +44,7 @@ namespace SnakeBattle
             {
                 while (true)
                 {
-                    NetworkStream n = serverClient.GetStream();
+                    NetworkStream n = _serverClient.GetStream();
                     message = new BinaryReader(n).ReadString();
 
                     CommandListAdd(message);
@@ -79,7 +81,9 @@ namespace SnakeBattle
             }
             else if (msg is JoinGameMessage)
             {
-                _commandList.Add(msg); // todo: Kolla om hostname är aktuellt
+                Console.WriteLine("Trying to join game"); //todo: "test"
+                if (msg.UserName == _filterUserName)
+                    _commandList.Add(msg); // todo: Kolla om hostname är aktuellt
             }
             else if (msg is ErrorMessage)
             {
@@ -92,14 +96,14 @@ namespace SnakeBattle
         {
             try
             {
-                NetworkStream nws = serverClient.GetStream();
+                NetworkStream nws = _serverClient.GetStream();
 
                 BinaryWriter bnw = new BinaryWriter(nws);
                 bnw.Write(message);
                 bnw.Flush();
 
                 if (message.Equals("quit"))
-                    serverClient.Close();
+                    _serverClient.Close();
             }
             catch (Exception ex)
             {

@@ -15,17 +15,19 @@ namespace SnakeBattle
         Square[,] _playField;
         const int _playFieldWidth = 20;
         const int _playFieldHeight = 20;
-        Player _player;
+        public Player _player;
         NetworkClient _nwc;
         const int _gamePort = 5000;
+        private GameRoom _currentGame;
 
         public Game()
         {
             _playField = new Square[_playFieldWidth, _playFieldHeight];
-            _player = new Player("Testplayer", 7, 7);
+            _player = new Player("<empty>", 7, 7);
             CreatePlayField();
             _playField[7, 7].Occupant = _player;
             _nwc = new NetworkClient();
+            _currentGame = new GameRoom();
         }
 
         private void CreatePlayField()
@@ -65,9 +67,8 @@ namespace SnakeBattle
                         break;
                     case 2:
                         Console.WriteLine("Anslut till spel");
-                        Console.WriteLine("TBD");
                         ListAvailableGames();
-                        ChooseGameRoom();
+                        JoinAGame();
                         //todo: anslut till spel
                         break;
                     case 3:
@@ -97,12 +98,75 @@ namespace SnakeBattle
             Console.WriteLine("Game Over");
         }
 
-        private void ChooseGameRoom()
+        private void JoinAGame()
+        {
+            if (ChooseGameRoom())
+            {
+                if (GameRoomValidated())
+                {
+                    Console.WriteLine("Nu sätter vi oss och väntar"); //todo: "test"
+                    WaitingRoom();
+                } else
+                {
+                    Console.WriteLine("Det gick inte att joina"); //todo :"test"
+                }
+            } else
+            {
+                Console.WriteLine("Det gick inte att skicka"); //todo: "test"
+            }
+        }
+
+        private bool GameRoomValidated()
+        {
+            {
+                bool valid = false;
+                Stopwatch myclock = new Stopwatch();
+                myclock.Start();
+                do
+                {
+                    Thread.Sleep(50);
+                    foreach (var item in _nwc._commandList)
+                    {
+                        if (item is JoinGameMessage)
+                        {
+                            JoinGameMessage tmp = item as JoinGameMessage;
+                            Console.WriteLine("time used: " + myclock.ElapsedMilliseconds);
+                            bool result = tmp.Confirmed;
+                            if (result)
+                            {
+                                _nwc._filterHostName = tmp.HostName;
+                                _currentGame.HostName = tmp.HostName;
+                            }
+                            Console.WriteLine("Trying to join: " + tmp.HostName + " Succeded: " + tmp.Confirmed); //todo: "test"
+                            _nwc._commandList.Remove(tmp);
+                            return result;
+                        }
+                    }
+
+
+                    if (myclock.ElapsedMilliseconds > 10000)
+                    {
+                        Console.WriteLine("GameRoomValidated timeout");
+                        return false;
+                    }
+                } while (!valid);
+                return false;
+            }
+        }
+
+        private bool ChooseGameRoom()
         {
             string hostName = UserInput.GetString(); //todo: kontrollera att det finns ett spelrum
-
             var msg = new JoinGameMessage(_player.PlayerName) { HostName = hostName };
-            _nwc.Send(MessageHandler.Serialize(msg));
+            try
+            {
+                _nwc.Send(MessageHandler.Serialize(msg));
+                return true;
+            } catch (Exception ex)
+            {
+                Console.WriteLine("Sending JoinGameMessage Failed: " +ex.Message);
+                return false;
+            }
         }
 
         private void ListAvailableGames()
@@ -187,6 +251,7 @@ namespace SnakeBattle
                     if (UserNameValidated(userName))
                     {
                         _player.PlayerName = userName;
+                        _nwc._filterUserName = userName;
                         // todo: ta bort rätt UserNameMessage ur _commandlist, kanske funkar nu
                         validUserName = true;
                     }
@@ -377,7 +442,6 @@ namespace SnakeBattle
             bool valid = false;
             Stopwatch myclock = new Stopwatch();
             myclock.Start();
-            Console.WriteLine("Testtest");
             do
             {
                 //while (!Console.KeyAvailable)
