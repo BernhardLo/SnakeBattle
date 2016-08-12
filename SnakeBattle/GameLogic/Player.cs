@@ -4,21 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SnakeBattle
+namespace GameLogic
 {
-    class Player
+    public class Player
     {
         public string PlayerName { get; set; }
         public int Xpos { get; set; }
         public int Ypos { get; set; }
-        public Direction Orientation { get; set; }
         public bool IsAlive { get; set; }
-
-        public Player(string PlayerName, int X, int Y)
+        public ConsoleColor Color { get; set; }
+        public Player(string PlayerName)
         {
             this.PlayerName = PlayerName;
-            this.Xpos = X;
-            this.Ypos = Y;
             this.IsAlive = true;
         }
     }

@@ -1,4 +1,5 @@
-﻿using MessagesLibrary;
+﻿using GameLogic;
+using MessagesLibrary;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -23,10 +24,7 @@ namespace SnakeBattle
 
         public Game()
         {
-            _playField = new Square[_playFieldWidth, _playFieldHeight];
-            _player = new Player("<empty>", 7, 7);
-            CreatePlayField();
-            _playField[7, 7].Occupant = _player;
+            _player = new Player("<empty>");
             _nwc = new NetworkClient();
             _currentGame = new GameRoom();
         }
@@ -37,7 +35,7 @@ namespace SnakeBattle
             {
                 for (int x = 0; x < _playFieldWidth; x++)
                 {
-                    var square = new Square { isOccupied = false };
+                    var square = new Square { isOccupied = false, Color = ConsoleColor.Black };
                     _playField[x, y] = square;
                 }
             }
@@ -87,15 +85,6 @@ namespace SnakeBattle
                 }
 
             } while (true);
-
-            do
-            {
-                DrawField();
-                HandleMovement();
-
-            } while (_player.IsAlive);
-
-            Console.WriteLine("Game Over");
         }
 
         private void JoinAGame()
@@ -190,7 +179,7 @@ namespace SnakeBattle
             else
                 foreach (var item in gameList)
                 {
-                    Console.WriteLine($"{item.HostName} - {item.Gamers.Count} / {item.NumberOfPlayers}");
+                    Console.WriteLine($"{item.HostName} - {item.PlayerList.Count}/{item.NumberOfPlayers}");
                 }
         }
 
@@ -369,26 +358,31 @@ namespace SnakeBattle
                 for (int x = 0; x < _playFieldWidth; x++)
                 {
                     Square square = _playField[x, y];
+                    Console.BackgroundColor = square.Color;
+                    Console.Write("  ");
+                    Console.BackgroundColor = ConsoleColor.Black;
 
-                    if (_player.Xpos == x && _player.Ypos == y)
-                    {
-                        Console.BackgroundColor = ConsoleColor.Red;
-                        Console.Write("  ");
-                        Console.BackgroundColor = ConsoleColor.Black;
-                    }
-                    else
-                    {
-                        if (_playField[x, y].Occupant == null)
-                        {
-                            Console.Write("  ");
-                        }
-                        else
-                        {
-                            Console.BackgroundColor = ConsoleColor.DarkRed;
-                            Console.Write("  ");
-                            Console.BackgroundColor = ConsoleColor.Black;
-                        }
-                    }
+
+
+                    //if (_player.Xpos == x && _player.Ypos == y)
+                    //{
+                    //    Console.BackgroundColor = ConsoleColor.Red;
+                    //    Console.Write("  ");
+                    //    Console.BackgroundColor = ConsoleColor.Black;
+                    //}
+                    //else
+                    //{
+                    //    if (!_playField[x, y].isOccupied)
+                    //    {
+                    //        Console.Write("  ");
+                    //    }
+                    //    else
+                    //    {
+                    //        Console.BackgroundColor = ConsoleColor.DarkRed;
+                    //        Console.Write("  ");
+                    //        Console.BackgroundColor = ConsoleColor.Black;
+                    //    }
+                    //}
                 }
                 Console.Write("|");
                 Console.WriteLine();
@@ -483,10 +477,31 @@ namespace SnakeBattle
                 }
                 //}
 
-            } while (/*Console.ReadKey(true).Key != ConsoleKey.Escape || */!valid); // todo: Lyssna efter escape
+            } while (/*Console.ReadKey(true).Key != ConsoleKey.A ||*/ !valid); // todo: Lyssna efter escape
 
-            Console.WriteLine("Dags att starta nytt spel");
+            Console.WriteLine("Dags att starta nytt spel"); //todo: "test"
 
+            RunGame();
+
+        }
+
+        private void RunGame()
+        {
+            Console.WriteLine("spelet har börjat"); //todo: "test"
+
+            _playField = new Square[_playFieldWidth, _playFieldHeight];
+            CreatePlayField();
+            DrawField();
+
+            do
+            {
+                DrawField();
+                //SendPlayMessage();
+                HandleMovement();
+
+            } while (_player.IsAlive);
+
+            Console.WriteLine("Game Over");
         }
 
         private void SetGameProperties(StartGameMessage tmp)

@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SnakeBattleServer", "SnakeB
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessagesLibrary", "MessagesLibrary\MessagesLibrary.csproj", "{2CE13242-A030-4E38-AE89-74D501E6A7F7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameLogic", "GameLogic\GameLogic.csproj", "{BE3BE501-2CDB-4160-82D4-16C04B940A73}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{2CE13242-A030-4E38-AE89-74D501E6A7F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2CE13242-A030-4E38-AE89-74D501E6A7F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2CE13242-A030-4E38-AE89-74D501E6A7F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE3BE501-2CDB-4160-82D4-16C04B940A73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE3BE501-2CDB-4160-82D4-16C04B940A73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE3BE501-2CDB-4160-82D4-16C04B940A73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE3BE501-2CDB-4160-82D4-16C04B940A73}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

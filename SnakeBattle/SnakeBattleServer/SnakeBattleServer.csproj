@@ -52,6 +52,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GameLogic\GameLogic.csproj">
+      <Project>{be3be501-2cdb-4160-82d4-16c04b940a73}</Project>
+      <Name>GameLogic</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MessagesLibrary\MessagesLibrary.csproj">
       <Project>{2CE13242-A030-4E38-AE89-74D501E6A7F7}</Project>
       <Name>MessagesLibrary</Name>

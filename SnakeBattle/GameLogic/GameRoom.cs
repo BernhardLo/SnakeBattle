@@ -4,21 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MessagesLibrary
+namespace GameLogic
 {
     public class GameRoom
     {
         public int NumberOfPlayers { get; set; }
-        public List<string> PlayerStartPositions { get; set; }
-        public List<int> PlayerColors { get; set; }
+        public List<Player> PlayerList { get; set; }
         public string StartingPlayer { get; set; }
         public int GameMode { get; set; }
         public string HostName { get; set; }
-        public List<string> Gamers { get; set; }
-
         public GameRoom()
         {
-            Gamers = new List<string>();
+            PlayerList = new List<Player>();
         }
     }
 }

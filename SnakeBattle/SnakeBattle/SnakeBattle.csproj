@@ -46,7 +46,6 @@
     <Compile Include="Direction.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="NetworkClient.cs" />
-    <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Square.cs" />
@@ -56,6 +55,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GameLogic\GameLogic.csproj">
+      <Project>{be3be501-2cdb-4160-82d4-16c04b940a73}</Project>
+      <Name>GameLogic</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MessagesLibrary\MessagesLibrary.csproj">
       <Project>{2CE13242-A030-4E38-AE89-74D501E6A7F7}</Project>
       <Name>MessagesLibrary</Name>

@@ -1,4 +1,5 @@
-﻿using MessagesLibrary;
+﻿using GameLogic;
+using MessagesLibrary;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -46,7 +47,8 @@ namespace SnakeBattleServer
                     {
                         NewGameMessage tmp = msg as NewGameMessage;
                         GameRoom room = new GameRoom() { HostName = tmp.UserName, GameMode = tmp.GameMode, NumberOfPlayers = tmp.NumberPlayers };
-                        room.Gamers.Add(tmp.UserName);
+                        Player tmpPlayer = new Player(tmp.UserName);
+                        room.PlayerList.Add(tmpPlayer);
                         myServer._games.Add(room);
                     }
                     else if (msg is FindGameMessage)
@@ -66,15 +68,17 @@ namespace SnakeBattleServer
                         foreach (var item in myServer._games)
                         {
                             if (tmp.HostName == item.HostName)
-                                if (item.Gamers.Count == item.NumberOfPlayers - 1)
+                                if (item.PlayerList.Count == item.NumberOfPlayers - 1)
                                 {
-                                    item.Gamers.Add(tmp.UserName);
+                                    Player tmpPlayer = new Player(tmp.UserName);
+                                    item.PlayerList.Add(tmpPlayer);
                                     tmp.Confirmed = true;
                                     gameOn = true;
                                 }
-                                else if (item.Gamers.Count < item.NumberOfPlayers)
+                                else if (item.PlayerList.Count < item.NumberOfPlayers)
                                 {
-                                    item.Gamers.Add(tmp.UserName);
+                                    Player tmpPlayer = new Player(tmp.UserName);
+                                    item.PlayerList.Add(tmpPlayer);
                                     tmp.Confirmed = true;
                                 }
                         }

@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using MessagesLibrary;
+using GameLogic;
 
 namespace SnakeBattleServer
 {
@@ -101,23 +102,20 @@ namespace SnakeBattleServer
         internal void SendStartGameMessage(string hostName)
         {
             GameRoom gr = _games.Where(c => c.HostName == hostName).SingleOrDefault();
-            List<string> tmpStartPosList = new List<string>();
-            List<int> tmpColorList = new List<int>();
-            string tmpStartingPlayer = gr.Gamers[1]; //todo: slumpa startspelare
+            string tmpStartingPlayer = gr.PlayerList[1].PlayerName; //todo: slumpa startspelare
             int xPos = 1;
             int yPos = 1;
+            ConsoleColor[] tmpColors = {ConsoleColor.Red, ConsoleColor.Blue, ConsoleColor.Green, ConsoleColor.White};
 
             //todo: slumpa ut startpositioner
 
-            for (int i = 0; i < gr.NumberOfPlayers; i++)
+            for (int i = 0; i < gr.PlayerList.Count; i++)
             {
-                tmpStartPosList.Add("0" + xPos.ToString() + "0" + yPos.ToString());
+                gr.PlayerList[i].Xpos = xPos;
+                gr.PlayerList[i].Ypos = yPos;
                 yPos+=2; xPos+=2;
-                tmpColorList.Add(i);
+                gr.PlayerList[i].Color = tmpColors[i];
             }
-
-            gr.PlayerStartPositions = tmpStartPosList;
-            gr.PlayerColors = tmpColorList;
             gr.StartingPlayer = tmpStartingPlayer;
 
             StartGameMessage sgm = new StartGameMessage(hostName)
