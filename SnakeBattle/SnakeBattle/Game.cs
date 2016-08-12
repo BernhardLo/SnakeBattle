@@ -140,7 +140,7 @@ namespace SnakeBattle
                                 _currentGame.HostName = tmp.HostName;
                             }
                             Console.WriteLine("Trying to join: " + tmp.HostName + " Succeded: " + tmp.Confirmed); //todo: "test"
-                            _nwc._commandList.Remove(tmp);
+                            _nwc._commandList.Remove(item); //todo: ändrade från tmp till item
                             return result;
                         }
                     }
@@ -291,7 +291,7 @@ namespace SnakeBattle
                         Console.WriteLine("time used: " + myclock.ElapsedMilliseconds);
                         bool result = tmp.UserNameConfirm;
                         Console.WriteLine("removing " + tmp.UserName); //todo: "test"
-                        _nwc._commandList.Remove(tmp);
+                        _nwc._commandList.Remove(item); //todo: ändrade från tmp till item
                         return result;
                     }
                 }
@@ -460,31 +460,33 @@ namespace SnakeBattle
                 //while (!Console.KeyAvailable)
                 //{
                 Thread.Sleep(50);
-                if (_nwc._commandList.Count != 0)
-                    foreach (var item in _nwc._commandList)
+                foreach (var item in _nwc._commandList)
+                {
+                    if (item is StartGameMessage)
                     {
-                        if (item is StartGameMessage)
-                        {
-                            StartGameMessage tmp = item as StartGameMessage;
-                            Console.WriteLine("time used: " + myclock.ElapsedMilliseconds);//todo: "test"
+                        StartGameMessage tmp = item as StartGameMessage;
+                        Console.WriteLine("time used: " + myclock.ElapsedMilliseconds);//todo: "test"
 
-                            SetGameProperties(tmp);
+                        SetGameProperties(tmp);
 
-                            Console.WriteLine("removing StartGameMessage from commandlist"); //todo: "test"
-                            _nwc._commandList.Remove(tmp);
-                            valid = true;
-                        }
-
+                        Console.WriteLine("removing StartGameMessage from commandlist"); //todo: "test"
+                        _nwc._commandList.Remove(item); //todo : ändrade från tmp till item
+                        valid = true;
+                        break;
                     }
+                }
                 if (myclock.ElapsedMilliseconds > 500000)
                 {
                     Console.WriteLine("StartGameLobby timeout");
                     valid = true;
 
                 }
+                break;
                 //}
 
             } while (/*Console.ReadKey(true).Key != ConsoleKey.Escape || */!valid); // todo: Lyssna efter escape
+
+            Console.WriteLine("Dags att starta nytt spel");
 
         }
 
