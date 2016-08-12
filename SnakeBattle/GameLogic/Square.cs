@@ -5,10 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SnakeBattle
+namespace GameLogic
 {
     class Square
     {
+        public Player Occupant { get; set; }
         public bool isOccupied { get; set; }
         public ConsoleColor Color { get; set; }
     }

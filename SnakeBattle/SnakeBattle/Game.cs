@@ -424,7 +424,7 @@ namespace SnakeBattle
                 }
                 else
                 {
-                    _playField[newX, newY].Occupant = _player;
+                    _playField[newX, newY].Color = _player.Color;
                     _playField[newX, newY].isOccupied = true;
                     _player.Xpos = newX;
                     _player.Ypos = newY;
@@ -491,6 +491,7 @@ namespace SnakeBattle
 
             _playField = new Square[_playFieldWidth, _playFieldHeight];
             CreatePlayField();
+            InsertPlayers();
             DrawField();
 
             do
@@ -504,10 +505,20 @@ namespace SnakeBattle
             Console.WriteLine("Game Over");
         }
 
+        private void InsertPlayers()
+        {
+            foreach (var item in _currentGame.PlayerList)
+            {
+                _playField[item.Xpos, item.Ypos].Color = item.Color;
+                _playField[item.Xpos, item.Ypos].isOccupied = true;
+            }
+        }
+
         private void SetGameProperties(StartGameMessage tmp)
         {
             Console.WriteLine("Received: " + MessageHandler.Serialize(tmp));
             _currentGame = tmp.GameRoomInfo;
+            Console.ReadKey();
         }
     }
 }

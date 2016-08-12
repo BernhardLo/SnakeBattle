@@ -74,6 +74,7 @@ namespace SnakeBattle
             else if (msg is StartGameMessage)
             {
                 Console.WriteLine("Nu kom det ett startgamemessage"); //todo: "test"
+                Thread.Sleep(500); //todo: fulfix av thread.sleep
                 if (msg.UserName == _filterHostName)
                     _commandList.Add(msg); // todo: Kolla om hostname är aktuellt
 
