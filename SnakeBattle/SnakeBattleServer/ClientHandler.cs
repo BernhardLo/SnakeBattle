@@ -43,6 +43,12 @@ namespace SnakeBattleServer
                         this.UserName = response.UserName;
                         myServer.PrivateSend(tcpclient, MessageHandler.Serialize(response));
                     }
+                    else if (msg is PlayMessage)
+                    {
+                        PlayMessage response = msg as PlayMessage;
+                        //todo: gamelogic stuff
+                        myServer.Broadcast(MessageHandler.Serialize(response));
+                    }
                     else if (msg is NewGameMessage)
                     {
                         NewGameMessage tmp = msg as NewGameMessage;
