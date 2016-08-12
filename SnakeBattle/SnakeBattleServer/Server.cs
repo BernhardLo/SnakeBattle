@@ -125,6 +125,7 @@ namespace SnakeBattleServer
                 GameRoomInfo = gr
             };
 
+            Thread.Sleep(20);
             Broadcast(MessageHandler.Serialize(sgm));
         }
     }

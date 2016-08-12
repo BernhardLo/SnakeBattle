@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
+
 namespace SnakeBattle
 {
     class Game
@@ -215,7 +216,7 @@ namespace SnakeBattle
             try
             {
                 _nwc.Send(MessageHandler.Serialize(ngm));
-                _currentGame.HostName  = _player.PlayerName;
+                _currentGame.HostName = _player.PlayerName;
                 _nwc._filterHostName = _player.PlayerName;
                 Console.WriteLine("NewGameRoom succeded"); //todo: "test"
             }
@@ -459,21 +460,22 @@ namespace SnakeBattle
                 //while (!Console.KeyAvailable)
                 //{
                 Thread.Sleep(50);
-                foreach (var item in _nwc._commandList)
-                {
-                    if (item is StartGameMessage)
+                if (_nwc._commandList.Count != 0)
+                    foreach (var item in _nwc._commandList)
                     {
-                        StartGameMessage tmp = item as StartGameMessage;
-                        Console.WriteLine("time used: " + myclock.ElapsedMilliseconds);//todo: "test"
+                        if (item is StartGameMessage)
+                        {
+                            StartGameMessage tmp = item as StartGameMessage;
+                            Console.WriteLine("time used: " + myclock.ElapsedMilliseconds);//todo: "test"
 
-                        SetGameProperties(tmp);
+                            SetGameProperties(tmp);
 
-                        Console.WriteLine("removing StartGameMessage from commandlist"); //todo: "test"
-                        _nwc._commandList.Remove(tmp);
-                        valid = true;
+                            Console.WriteLine("removing StartGameMessage from commandlist"); //todo: "test"
+                            _nwc._commandList.Remove(tmp);
+                            valid = true;
+                        }
+
                     }
-
-                }
                 if (myclock.ElapsedMilliseconds > 500000)
                 {
                     Console.WriteLine("StartGameLobby timeout");
