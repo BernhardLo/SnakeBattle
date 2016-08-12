@@ -481,7 +481,6 @@ namespace SnakeBattle
                     valid = true;
 
                 }
-                break;
                 //}
 
             } while (/*Console.ReadKey(true).Key != ConsoleKey.Escape || */!valid); // todo: Lyssna efter escape
