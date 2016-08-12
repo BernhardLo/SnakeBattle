@@ -521,7 +521,7 @@ namespace SnakeBattle
             {
                 PlayMessage apm = WaitForPlayMessage();
                 Console.WriteLine(apm.ToString());
-                if (_currentGame.StartingPlayer == _player.PlayerName)
+                if (apm.NextUser == _player.PlayerName)
                 { //todo: fixa antal steg per tur lite snyggare
                     HandleMovement();
                     DrawField();

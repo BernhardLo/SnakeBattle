@@ -58,6 +58,23 @@ namespace SnakeBattleServer
             }
         }
 
+        internal string GetNextUser(PlayMessage pm)
+        {
+            string result = "";
+
+            GameRoom gr = _games.Where(g => g.HostName == pm.HostName).SingleOrDefault();
+            Player temp = gr.PlayerList.Where(p => p.PlayerName == pm.UserName).SingleOrDefault();
+            int j = gr.PlayerList.IndexOf(temp);
+            if (j == gr.PlayerList.Count)
+                j = 0;
+            else
+                j += 1;
+
+            result = gr.PlayerList[j].PlayerName;
+
+            return result;
+        }
+
         internal void PrivateSend(TcpClient tcpclient, string message)
         {
             NetworkStream n = tcpclient.GetStream();
