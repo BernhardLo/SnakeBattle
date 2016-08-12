@@ -12,16 +12,18 @@ namespace MessagesLibrary
         public static string Serialize(Message obj)
         {
             string command = "";
-            if (obj.GetType() == typeof(UserNameMessage))
+            if (obj is UserNameMessage)
                 command = "un";
-            else if (obj.GetType() == typeof(NewGameMessage))
+            else if (obj is NewGameMessage)
                 command = "ng";
-            else if (obj.GetType() == typeof(PlayMessage))
+            else if (obj is PlayMessage)
                 command = "pm";
-            else if (obj.GetType() == typeof(JoinGameMessage))
+            else if (obj is JoinGameMessage)
                 command = "jg";
-            else if(obj.GetType() == typeof(FindGameMessage))
+            else if (obj is FindGameMessage)
                 command = "fg";
+            else if (obj is StartGameMessage)
+                command = "sg";
             else
                 command = "er";
 
@@ -46,6 +48,8 @@ namespace MessagesLibrary
                 result = JsonConvert.DeserializeObject<ErrorMessage>(message);
             else if (commandType == "fg")
                 result = JsonConvert.DeserializeObject<FindGameMessage>(message);
+            else if (commandType == "sg")
+                result = JsonConvert.DeserializeObject<StartGameMessage>(message);
             else
                 result = new ErrorMessage ("Error"){ EMessage = "Something went terribly wrong" };
 
