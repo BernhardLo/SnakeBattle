@@ -22,6 +22,9 @@ namespace SnakeBattle
         const int _gamePort = 5000;
         private GameRoom _currentGame;
 
+        /// <summary>
+        /// Create player with playername "<empty>" as default, create a new networkclient and new Gameroom. 
+        /// </summary>
         public Game()
         {
             _player = new Player("<empty>");
@@ -29,6 +32,9 @@ namespace SnakeBattle
             _currentGame = new GameRoom();
         }
 
+        /// <summary>
+        /// Creates the play-field ; 20 x 20
+        /// </summary>
         private void CreatePlayField()
         {
             for (int y = 0; y < _playFieldHeight; y++)
@@ -40,7 +46,9 @@ namespace SnakeBattle
                 }
             }
         }
-
+        /// <summary>
+        /// Trying to connect to the server, writes the ip-address if succeeded. Sending username messga to the server who check if the username is avaiable. Printing the menu and handle the userinput. 
+        /// </summary>
         public void Play()
         {
             //Ansluter till servern och skriver ut IP-adressen om det lyckades
@@ -86,6 +94,10 @@ namespace SnakeBattle
 
             } while (true);
         }
+
+        /// <summary>
+        /// Printing out messages to user depending on game-room. Place the user in the waiting-room if the game-room is not full.
+        /// </summary>
 
         private void JoinAGame()
         {
@@ -144,7 +156,10 @@ namespace SnakeBattle
                 return false;
             }
         }
-
+        /// <summary>
+        /// Ask user for input of game (hostname), try to serialize message to server
+        /// </summary>
+        /// <returns></returns>
         private bool ChooseGameRoom()
         {
             Console.Write("Ange spelrummets namn: ");
@@ -161,7 +176,9 @@ namespace SnakeBattle
                 return false;
             }
         }
-
+        /// <summary>
+        /// Serialize message to the server to get avaiable games
+        /// </summary>
         private void ListAvailableGames()
         {
             _nwc.Send(MessageHandler.Serialize(new FindGameMessage(_player.PlayerName)));
@@ -169,7 +186,10 @@ namespace SnakeBattle
             PrintGameRooms(gameList);
 
         }
-
+        /// <summary>
+        /// Printing out avaiable games for user
+        /// </summary>
+        /// <param name="gameList"></param>
         private void PrintGameRooms(List<GameRoom> gameList)
         {
             if (gameList.Count == 0)
@@ -182,6 +202,9 @@ namespace SnakeBattle
                     Console.WriteLine($"{item.HostName} - {item.PlayerList.Count}/{item.NumberOfPlayers}");
                 }
         }
+        /// <summary>
+        /// Ask user for number of players. Trying to serialaize gameinfo to the server. If succeeded; put the user in the waitingroom.
+        /// </summary>
 
         private void NewGameRoom()
         {
@@ -236,7 +259,6 @@ namespace SnakeBattle
             return serverIP;
         }
 
-        //todo : skriv en summary för SetUserName
         /// <summary>
         /// 
         /// </summary>
