@@ -12,7 +12,7 @@ using GameLogic;
 
 namespace SnakeBattleServer
 {
-    class Server
+    class Server : IDisposable
     {
         List<ClientHandler> _clients = new List<ClientHandler>();
         public List<GameRoom> _games = new List<GameRoom>();
@@ -157,6 +157,15 @@ namespace SnakeBattleServer
             };
 
             Broadcast(MessageHandler.Serialize(sgm));
+        }
+
+        public void Dispose()
+        {
+            foreach (var item in _clients)
+            {
+                item.tcpclient.Close();
+            }
+            Console.WriteLine("Die Die");
         }
     }
 }
