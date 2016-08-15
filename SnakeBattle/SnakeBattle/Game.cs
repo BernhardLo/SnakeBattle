@@ -552,31 +552,34 @@ namespace SnakeBattle
                     winnerName = apm.NextUser;
                     gameIsWon = true;
                 }
-                Console.WriteLine(MessageHandler.Serialize(apm));
-                // If recived message is not player add movement to squares
-                if (apm.UserName != _player.PlayerName) // JE 
+                else
                 {
-                    DrawOponents(apm);// JE
-                    DrawField(0);
-                }
+                    Console.WriteLine(MessageHandler.Serialize(apm));
+                    // If recived message is not player add movement to squares
+                    if (apm.UserName != _player.PlayerName) // JE 
+                    {
+                        DrawOponents(apm);// JE
+                        DrawField(0);
+                    }
 
-                if (apm.NextUser == _player.PlayerName)
-                { //todo: fixa antal steg per tur lite snyggare
-                    DrawField(3);
-                    PlayMessage pmsg = new PlayMessage(_player.PlayerName);
-                    List<int[]> moveList = new List<int[]>();
-                    moveList.Add(HandleMovement());
-                    DrawField(2);
-                    moveList.Add(HandleMovement());
-                    DrawField(1);
-                    moveList.Add(HandleMovement());
-                    DrawField(0);
+                    if (apm.NextUser == _player.PlayerName)
+                    { //todo: fixa antal steg per tur lite snyggare
+                        DrawField(3);
+                        PlayMessage pmsg = new PlayMessage(_player.PlayerName);
+                        List<int[]> moveList = new List<int[]>();
+                        moveList.Add(HandleMovement());
+                        DrawField(2);
+                        moveList.Add(HandleMovement());
+                        DrawField(1);
+                        moveList.Add(HandleMovement());
+                        DrawField(0);
 
-                    pmsg.MoveList = moveList;
-                    pmsg.IsAlive = _player.IsAlive;
-                    pmsg.HostName = _currentGame.HostName;
-                    _nwc.Send(MessageHandler.Serialize(pmsg));
-                    Console.WriteLine(MessageHandler.Serialize(pmsg));
+                        pmsg.MoveList = moveList;
+                        pmsg.IsAlive = _player.IsAlive;
+                        pmsg.HostName = _currentGame.HostName;
+                        _nwc.Send(MessageHandler.Serialize(pmsg));
+                        Console.WriteLine(MessageHandler.Serialize(pmsg));
+                    }
                 }
                 
 
