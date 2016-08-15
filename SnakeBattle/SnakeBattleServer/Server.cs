@@ -68,10 +68,15 @@ namespace SnakeBattleServer
 
             int j = gr.PlayerList.IndexOf(temp);
 
-            if (pm.IsAlive == false)
+            if (pm.IsAlive == false && gr.PlayerList.IndexOf(temp) != gr.PlayerList.Count-1)
             {
                 gr.PlayerList.Remove(temp);
+                j = 0;
                 
+            } else if (pm.IsAlive == false)
+            {
+                gr.PlayerList.Remove(temp);
+
             } else
             {
 
