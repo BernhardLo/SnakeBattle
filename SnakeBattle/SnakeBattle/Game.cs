@@ -389,7 +389,11 @@ namespace SnakeBattle
                 Console.BackgroundColor = _currentGame.PlayerList[i].Color;
                 Console.Write("  ");
                 Console.BackgroundColor = ConsoleColor.Black;
-                Console.Write(" " +_currentGame.PlayerList[i].PlayerName);
+                Console.Write(" " +_currentGame.PlayerList[i].PlayerName + " ");
+                if (!_currentGame.PlayerList[i].IsAlive)
+                {
+                    Console.Write("(R.I.P.)");
+                }
             }
             Console.SetCursorPosition(3, _playFieldHeight + 3);
             Console.Write("Antal steg kvar: ");
@@ -581,7 +585,7 @@ namespace SnakeBattle
             int topoffset = 2;
             for (int y = 0; y < 12; y++)
             {
-                for (int x = 0; x < 8; x++)
+                for (int x = 0; x < 6; x++)
                 {
                     int color = Randomizer.Rng(0, 6);
                     if (color == 0)
@@ -596,7 +600,7 @@ namespace SnakeBattle
                         Console.ForegroundColor = ConsoleColor.Magenta;
                     if (color == 5)
                         Console.ForegroundColor = ConsoleColor.Cyan;
-                    Console.SetCursorPosition((x * 12) + leftoffset, (y * 2) + topoffset);
+                    Console.SetCursorPosition((x * 14) + leftoffset, (y * 2) + topoffset);
                     Console.Write(winnerName);
                     Console.ForegroundColor = ConsoleColor.White;
                 }
@@ -652,6 +656,14 @@ namespace SnakeBattle
                         if (item is PlayMessage)
                         {
                             tmp = item as PlayMessage;
+
+                            //todo: ställ in "isAlive" till _currentgame från inkommande playmessage
+                            foreach (var player in _currentGame.PlayerList)
+                            {
+                                if (player.PlayerName == tmp.UserName)
+                                    player.IsAlive = tmp.IsAlive;
+                            }
+
                             PlayMessage result = new PlayMessage(item.UserName);
                             result = tmp;
                             _nwc._commandList.Remove(item);
@@ -662,7 +674,7 @@ namespace SnakeBattle
 
                     if (myclock.ElapsedMilliseconds > 45000)
                     {
-                        Console.WriteLine("GameRoomValidated timeout");
+                        Console.WriteLine("WaitForPlayMessage timeout");
                         return tmp;
                     }
                 } while (!valid);
