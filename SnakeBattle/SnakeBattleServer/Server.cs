@@ -17,7 +17,8 @@ namespace SnakeBattleServer
         TcpListener listener;
         List<ClientHandler> _clients = new List<ClientHandler>();
         public List<GameRoom> _games = new List<GameRoom>();
-        List<int[]> startPos = new List<int[]>() {
+        List<int[]> startPos = new List<int[]>()
+        {
             //new int[2] { 2 , 2 },
             //new int[2] { 7 , 2 },
             //new int[2] { 13 , 2 },
@@ -168,7 +169,30 @@ namespace SnakeBattleServer
         public void DisconnectClient(ClientHandler client)
         {
             Console.WriteLine(client.UserName + " has disconnected.");
+            FindPlayer(client.UserName);
             _clients.Remove(client);
+        }
+
+
+        /// <summary>
+        /// Finds a player from a string representing the PlayerName in all existing gameRooms and removes the player from the playerList.
+        /// </summary>
+        /// <param name="Name"> A String Reprecnting a player to be found and removed.</param>
+        public void FindPlayer(string Name) // Tested with 3 players from 1 computer. needs more testing.
+        {
+            GameRoom gr;
+            Player pl;
+            foreach (GameRoom item in _games)
+            {
+                if (item.PlayerList.Any(p => p.PlayerName == Name))
+                {
+                    gr = item;
+                    pl = item.PlayerList.Where(x => x.PlayerName == Name).SingleOrDefault();
+                    gr.PlayerList.Remove(pl);
+
+                }
+            }
+            
         }
 
         internal void SendStartGameMessage(string hostName)
