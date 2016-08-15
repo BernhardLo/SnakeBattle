@@ -71,7 +71,7 @@ namespace SnakeBattleServer
 
             if (!pm.IsAlive)
             {
-                if (gr.PlayerList.IndexOf(temp) != gr.PlayerList.Count - 1)
+                if (gr.PlayerList.IndexOf(temp) == gr.PlayerList.Count - 1)
                 {
                     j = 0;
                 }
