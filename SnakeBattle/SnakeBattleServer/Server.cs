@@ -125,6 +125,7 @@ namespace SnakeBattleServer
         public void Broadcast(string message)
         {
             Console.WriteLine("Broadcasting: " + message);
+            try { 
             foreach (ClientHandler tmpClient in _clients)
             {
                 NetworkStream n = tmpClient.tcpclient.GetStream();
@@ -132,6 +133,11 @@ namespace SnakeBattleServer
                 w.Write(message);
                 w.Flush();
             }
+            }catch(Exception exep)
+            {
+                Console.WriteLine("Broadcast error: "+ exep.Message);
+            }
+
         }
 
         public void DisconnectClient(ClientHandler client)
@@ -181,17 +187,24 @@ namespace SnakeBattleServer
         {
             foreach (ClientHandler tmpClient in _clients)
             {
+                try { 
+                Console.WriteLine(tmpClient.UserName);
                 NetworkStream n = tmpClient.tcpclient.GetStream();
                 BinaryWriter w = new BinaryWriter(n);
                 var msg = new ErrorMessage("Server") { EMessage = " Server shutting down" };
                 w.Write(MessageHandler.Serialize(msg));
                 w.Flush();
-
+                }
+                catch(Exception exx)
+                {
+                    Console.WriteLine("Exit Method failed: " + exx.Message);
+                }
                 tmpClient.tcpclient.Close();
 
                 
+                
             }
-
+            Console.WriteLine("Server Shuting down");
             if (listener != null)
                 listener.Stop();
         }
