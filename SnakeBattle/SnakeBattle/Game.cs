@@ -516,7 +516,8 @@ namespace SnakeBattle
         private void RunGame()
         {
             Console.WriteLine("spelet har börjat"); //todo: "test"
-
+            bool gameIsWon = false;
+            string winnerName = "";
             _playField = new Square[_playFieldWidth, _playFieldHeight];
             CreatePlayField();
             InsertPlayers();
@@ -543,6 +544,11 @@ namespace SnakeBattle
             do
             {
                 PlayMessage apm = WaitForPlayMessage();
+                if (apm.GameIsWon)
+                {
+                    winnerName = apm.NextUser;
+                    gameIsWon = true;
+                }
                 Console.WriteLine(MessageHandler.Serialize(apm));
                 // If recived message is not player add movement to squares
                 if (apm.UserName != _player.PlayerName) // JE 
@@ -572,10 +578,10 @@ namespace SnakeBattle
 
                 //DrawField();
 
-            } while (_player.IsAlive);
+            } while (!gameIsWon);
 
             Console.Clear(); //todo: "test"
-            Console.WriteLine("Game Over");
+            Console.WriteLine(winnerName + " has won the game!!!");
             Console.ReadKey(); //todo: "test"
         }
 

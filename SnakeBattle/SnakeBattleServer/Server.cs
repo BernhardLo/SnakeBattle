@@ -58,19 +58,29 @@ namespace SnakeBattleServer
             }
         }
 
-        internal string GetNextUser(PlayMessage pm)
+        internal PlayMessage GetNextUser(PlayMessage pm)
         {
-            string result = "";
+            PlayMessage result = pm;
 
             GameRoom gr = _games.Where(g => g.HostName == pm.HostName).SingleOrDefault();
             Player temp = gr.PlayerList.Where(p => p.PlayerName == pm.UserName).SingleOrDefault();
+
             int j = gr.PlayerList.IndexOf(temp);
+
             if (j == gr.PlayerList.Count-1)
                 j = 0;
             else
                 j += 1;
 
-            result = gr.PlayerList[j].PlayerName;
+            if (temp.IsAlive == false)
+                gr.PlayerList.Remove(temp);
+
+            if (gr.PlayerList.Count == 1)
+            {
+                result.GameIsWon = true;
+            }
+
+            result.NextUser = gr.PlayerList[j].PlayerName;
 
             return result;
         }

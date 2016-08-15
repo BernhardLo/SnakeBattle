@@ -19,5 +19,6 @@ namespace MessagesLibrary
         public bool IsAlive { get; set; }
         public string NextUser { get; set; }
         public int PowerUp { get; set; }
+        public bool GameIsWon { get; set; }
     }
 }

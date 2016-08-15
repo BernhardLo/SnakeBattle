@@ -46,7 +46,7 @@ namespace SnakeBattleServer
                     else if (msg is PlayMessage)
                     {
                         PlayMessage response = msg as PlayMessage;
-                        response.NextUser = myServer.GetNextUser(response);
+                        response = myServer.GetNextUser(response);
                         response.TurnCount++;
                         myServer.Broadcast(MessageHandler.Serialize(response));
                     }
