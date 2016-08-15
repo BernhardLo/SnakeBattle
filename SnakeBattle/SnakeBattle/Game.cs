@@ -201,7 +201,7 @@ namespace SnakeBattle
 
         private void NewGameRoom()
         {
-            int numberOfPlayers = UserInput.GetIntFiltered("Ange antal spelare: ", 2, 4);
+            int numberOfPlayers = UserInput.GetIntFiltered("Ange antal spelare (2-8): ", 2, 8);
 
             NewGameMessage ngm = new NewGameMessage(_player.PlayerName)
             {
@@ -389,7 +389,7 @@ namespace SnakeBattle
                 Console.BackgroundColor = _currentGame.PlayerList[i].Color;
                 Console.Write("  ");
                 Console.BackgroundColor = ConsoleColor.Black;
-                Console.Write(_currentGame.PlayerList[i].PlayerName);
+                Console.Write(" " +_currentGame.PlayerList[i].PlayerName);
             }
             Console.SetCursorPosition(3, _playFieldHeight + 3);
             Console.Write("Antal steg kvar: ");
@@ -572,13 +572,14 @@ namespace SnakeBattle
             Console.Clear();
             PrintWinner(winnerName);
             Console.ReadKey(true);
+            Console.Clear();
         }
 
         private void PrintWinner(string winnerName)
         {
             int leftoffset = 3;
             int topoffset = 2;
-            for (int y = 0; y < 9; y++)
+            for (int y = 0; y < 12; y++)
             {
                 for (int x = 0; x < 8; x++)
                 {
@@ -600,6 +601,9 @@ namespace SnakeBattle
                     Console.ForegroundColor = ConsoleColor.White;
                 }
             }
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine("Tryck på en knapp för att fortsätta");
         }
 
 
