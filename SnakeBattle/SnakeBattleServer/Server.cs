@@ -64,7 +64,6 @@ namespace SnakeBattleServer
 
             GameRoom gr = _games.Where(g => g.HostName == pm.HostName).SingleOrDefault();
             Player temp = gr.PlayerList.Where(p => p.PlayerName == pm.UserName).SingleOrDefault();
-            //temp.IsAlive = pm.IsAlive;
 
             int j = gr.PlayerList.IndexOf(temp);
 
@@ -84,35 +83,18 @@ namespace SnakeBattleServer
                 else
                     j += 1;
             }
-            //if (pm.IsAlive == false && gr.PlayerList.IndexOf(temp) != gr.PlayerList.Count - 1)
-            //{
-            //    gr.PlayerList.Remove(temp);
-            //    j = 0;
-
-            //}
-            //else if (pm.IsAlive == false)
-            //{
-            //    gr.PlayerList.Remove(temp);
-
-            //}
-            //else
-            //{
-
-            //    if (j == gr.PlayerList.Count - 1)
-            //        j = 0;
-            //    else
-            //        j += 1;
-            //}
 
             foreach (var item in gr.PlayerList)
                 Console.WriteLine(item.PlayerName);
 
+            result.NextUser = gr.PlayerList[j].PlayerName;
+
             if (gr.PlayerList.Count == 1)
             {
                 result.GameIsWon = true;
+                _games.Remove(gr);
             }
 
-            result.NextUser = gr.PlayerList[j].PlayerName;
 
             return result;
         }
