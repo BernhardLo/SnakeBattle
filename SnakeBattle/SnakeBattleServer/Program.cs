@@ -52,7 +52,7 @@ namespace SnakeBattleServer
         {
             SetConsoleCtrlHandler(new HandlerRoutine(ConsoleCtrlCheck), true);
 
-            Server myServer = new Server();
+            myServer = new Server();
             Thread serverThread = new Thread(myServer.Run);
             serverThread.Start();
             serverThread.Join();

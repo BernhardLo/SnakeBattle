@@ -14,11 +14,12 @@ namespace SnakeBattleServer
 {
     class Server : IDisposable
     {
+        TcpListener listener;
         List<ClientHandler> _clients = new List<ClientHandler>();
         public List<GameRoom> _games = new List<GameRoom>();
         public void Run()
         {
-            TcpListener listener = new TcpListener(IPAddress.Any, 5000);
+            listener = new TcpListener(IPAddress.Any, 5000);
             IPHostEntry host;
             string localIP = "?";
             host = Dns.GetHostEntry(Dns.GetHostName());
@@ -188,8 +189,11 @@ namespace SnakeBattleServer
 
                 tmpClient.tcpclient.Close();
 
-
+                
             }
+
+            if (listener != null)
+                listener.Stop();
         }
     }
 }
