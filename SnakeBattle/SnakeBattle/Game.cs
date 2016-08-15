@@ -368,7 +368,7 @@ namespace SnakeBattle
         {
             Console.Clear();
             if (mod != 0)
-                Console.ForegroundColor = ConsoleColor.Red;
+                Console.ForegroundColor = _player.Color;
 
             Console.Write("  ");
             for (int i = 0; i < _playFieldWidth; i++)
@@ -402,6 +402,9 @@ namespace SnakeBattle
             {
 
                 Console.SetCursorPosition((_playFieldWidth*2) + 5, 3+i);
+                Console.BackgroundColor = _currentGame.PlayerList[i].Color;
+                Console.Write("  ");
+                Console.BackgroundColor = ConsoleColor.Black;
                 Console.Write(_currentGame.PlayerList[i].PlayerName);
             }
             Console.SetCursorPosition(3, _playFieldHeight + 3);
@@ -409,7 +412,7 @@ namespace SnakeBattle
 
             for (int i = 0; i < mod; i++)
             {
-                Console.BackgroundColor = ConsoleColor.Green;
+                Console.BackgroundColor = _player.Color;
                 Console.Write("  ");
                 Console.BackgroundColor = ConsoleColor.Black;
                 Console.Write("  ");

@@ -154,7 +154,7 @@ namespace SnakeBattleServer
             string tmpStartingPlayer = gr.PlayerList[1].PlayerName; //todo: slumpa startspelare
             int xPos = 1;
             int yPos = 1;
-            ConsoleColor[] tmpColors = { ConsoleColor.Red, ConsoleColor.Blue, ConsoleColor.Green, ConsoleColor.White };
+            ConsoleColor[] tmpColors = { ConsoleColor.Red, ConsoleColor.Blue, ConsoleColor.Green, ConsoleColor.Yellow };
 
             //todo: slumpa ut startpositioner
 
