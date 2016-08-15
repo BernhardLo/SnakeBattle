@@ -17,6 +17,27 @@ namespace SnakeBattleServer
         TcpListener listener;
         List<ClientHandler> _clients = new List<ClientHandler>();
         public List<GameRoom> _games = new List<GameRoom>();
+        List<int[]> startPos = new List<int[]>() {
+            //new int[2] { 2 , 2 },
+            //new int[2] { 7 , 2 },
+            //new int[2] { 13 , 2 },
+            //new int[2] { 17 , 3 },
+            //new int[2] { 4 , 5 },
+            //new int[2] { 9 , 4 },
+            //new int[2] { 12 , 5 },
+            //new int[2] { 18 , 5 },
+            //new int[2] { 3 , 9 },
+            //new int[2] { 8 , 12 },
+            //new int[2] { 13 , 10 },
+            //new int[2] { 16 , 9 },
+            //new int[2] { 4 , 15 },
+            //new int[2] { 10 , 14 },
+            //new int[2] { 16 , 16 },
+            //new int[2] { 6 , 14 },
+            //new int[2] { 7 , 17 },
+            //new int[2] { 17 , 17 },
+            //new int[2] { 5 , 18 }
+        };
         public void Run()
         {
             listener = new TcpListener(IPAddress.Any, 5000);
@@ -162,9 +183,22 @@ namespace SnakeBattleServer
 
             for (int i = 0; i < gr.PlayerList.Count; i++)
             {
-                gr.PlayerList[i].Xpos = xPos;
-                gr.PlayerList[i].Ypos = yPos;
-                yPos += 4; xPos += 4;
+                bool validPlacement = false;
+                do
+                {
+                    int x = Randomizer.Rng(1, 20);
+                    int y = Randomizer.Rng(1, 20);
+                    if (!startPos.Contains(new int[2] { x, y }))
+                    {
+                        gr.PlayerList[i].Xpos = x;
+                        gr.PlayerList[i].Ypos = y;
+                        startPos.Add(new int[2] { x, y });
+                        validPlacement = true;
+                    }
+
+                } while (!validPlacement);
+
+                //yPos += 4; xPos += 4;
                 gr.PlayerList[i].Color = tmpColors[i];
             }
             gr.StartingPlayer = tmpStartingPlayer;
