@@ -64,6 +64,7 @@ namespace SnakeBattleServer
 
             GameRoom gr = _games.Where(g => g.HostName == pm.HostName).SingleOrDefault();
             Player temp = gr.PlayerList.Where(p => p.PlayerName == pm.UserName).SingleOrDefault();
+            //temp.IsAlive = pm.IsAlive;
 
             int j = gr.PlayerList.IndexOf(temp);
 
@@ -72,8 +73,12 @@ namespace SnakeBattleServer
             else
                 j += 1;
 
-            if (temp.IsAlive == false)
+            if (pm.IsAlive == false)
+            {
                 gr.PlayerList.Remove(temp);
+                Console.WriteLine(gr.PlayerList.ToString());
+            }
+                
 
             if (gr.PlayerList.Count == 1)
             {
