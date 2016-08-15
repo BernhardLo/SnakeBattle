@@ -21,7 +21,6 @@ namespace SnakeBattle
         NetworkClient _nwc;
         const int _gamePort = 5000;
         private GameRoom _currentGame;
-        Thread _keyPressListener;
 
         /// <summary>
         /// Create player with playername "<empty>" as default, create a new networkclient and new Gameroom. 
@@ -203,8 +202,6 @@ namespace SnakeBattle
         private void NewGameRoom()
         {
             int numberOfPlayers = UserInput.GetIntFiltered("Ange antal spelare: ", 2, 4);
-
-            //todo: spelläge och spelplansstorlek
 
             NewGameMessage ngm = new NewGameMessage(_player.PlayerName)
             {
@@ -471,35 +468,27 @@ namespace SnakeBattle
             myclock.Start();
             do
             {
-                //while (!Console.KeyAvailable)
-                //{
                 Thread.Sleep(50);
                 foreach (var item in _nwc._commandList)
                 {
                     if (item is StartGameMessage)
                     {
                         StartGameMessage tmp = item as StartGameMessage;
-                        //Console.WriteLine("time used: " + myclock.ElapsedMilliseconds);
-
                         SetGameProperties(tmp);
-
                         _nwc._commandList.Remove(item);
                         valid = true;
                         break;
                     }
                 }
-                if (myclock.ElapsedMilliseconds > 500000)
+                if (myclock.ElapsedMilliseconds > 120000)
                 {
                     Console.WriteLine("StartGameLobby timeout");
                     valid = true;
-
                 }
-                //}
 
-            } while (/*Console.ReadKey(true).Key != ConsoleKey.A ||*/ !valid); // todo: Lyssna efter escape
+            } while (!valid);
 
             RunGame();
-
         }
 
         private void RunGame()
@@ -519,7 +508,7 @@ namespace SnakeBattle
                 myclock.Start();
                 List<int[]> moveList = new List<int[]>();
 
-                for (int i = 3; i > 0; i-- )
+                for (int i = 3; i > 0; i--)
                 {
                     DrawField(i);
                     moveList.Add(HandleMovement());
@@ -542,19 +531,16 @@ namespace SnakeBattle
                 }
                 else
                 {
-                    Console.WriteLine(MessageHandler.Serialize(apm));
                     // If recived message is not player add movement to squares
 
                     if (apm.UserName != _player.PlayerName) // JE 
                     {
                         DrawOponents(apm);// JE
                         DrawField(0);
-                        _keyPressListener = new Thread(keyPress);
                     }
 
                     if (apm.NextUser == _player.PlayerName)
                     {
-                        _keyPressListener.Abort();
                         PlayMessage pmsg = new PlayMessage(_player.PlayerName);
                         List<int[]> moveList = new List<int[]>();
                         for (int i = 3; i > 0; i--)
@@ -568,7 +554,6 @@ namespace SnakeBattle
                         pmsg.IsAlive = _player.IsAlive;
                         pmsg.HostName = _currentGame.HostName;
                         _nwc.Send(MessageHandler.Serialize(pmsg));
-                        Console.WriteLine(MessageHandler.Serialize(pmsg));
                     }
                 }
 
@@ -578,14 +563,22 @@ namespace SnakeBattle
             } while (!gameIsWon);
 
             Console.Clear();
-            Console.WriteLine(winnerName + " has won the game!!!"); //todo: rolig asciiart för vinnaren
+            PrintWinner(winnerName);
             Console.ReadKey(true);
         }
 
-        private void keyPress()
+        private void PrintWinner(string winnerName)
         {
-            while (Console.KeyAvailable && _keyPressListener.IsAlive)
-                Console.ReadKey(false);
+            int leftoffset = 3;
+            int topoffset = 2;
+            for (int y = 0; y < 5; y++)
+            {
+                for (int x = 0; x < 4; x++)
+                {
+                    Console.SetCursorPosition((x * 12) + leftoffset, (y * 2) + topoffset);
+                    Console.Write(winnerName);
+                }
+            }
         }
 
 
@@ -669,7 +662,6 @@ namespace SnakeBattle
 
         private void SetGameProperties(StartGameMessage tmp)
         {
-            Console.WriteLine("Received: " + MessageHandler.Serialize(tmp));
             _currentGame = tmp.GameRoomInfo;
             _player = _currentGame.PlayerList.Where(p => p.PlayerName == _player.PlayerName).SingleOrDefault();
         }
