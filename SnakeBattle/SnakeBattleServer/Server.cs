@@ -77,7 +77,8 @@ namespace SnakeBattleServer
                 }
                 gr.PlayerList.Remove(temp);
 
-            } else if (pm.IsAlive)
+            }
+            else if (pm.IsAlive)
             {
                 if (j == gr.PlayerList.Count - 1)
                     j = 0;
@@ -89,6 +90,7 @@ namespace SnakeBattleServer
                 Console.WriteLine(item.PlayerName);
 
             result.NextUser = gr.PlayerList[j].PlayerName;
+            gr.StartingPlayer = result.NextUser;
 
             if (gr.PlayerList.Count == 1)
             {
@@ -125,17 +127,19 @@ namespace SnakeBattleServer
         public void Broadcast(string message)
         {
             Console.WriteLine("Broadcasting: " + message);
-            try { 
-            foreach (ClientHandler tmpClient in _clients)
+            try
             {
-                NetworkStream n = tmpClient.tcpclient.GetStream();
-                BinaryWriter w = new BinaryWriter(n);
-                w.Write(message);
-                w.Flush();
+                foreach (ClientHandler tmpClient in _clients)
+                {
+                    NetworkStream n = tmpClient.tcpclient.GetStream();
+                    BinaryWriter w = new BinaryWriter(n);
+                    w.Write(message);
+                    w.Flush();
+                }
             }
-            }catch(Exception exep)
+            catch (Exception exep)
             {
-                Console.WriteLine("Broadcast error: "+ exep.Message);
+                Console.WriteLine("Broadcast error: " + exep.Message);
             }
 
         }
@@ -185,22 +189,23 @@ namespace SnakeBattleServer
         {
             foreach (ClientHandler tmpClient in _clients)
             {
-                try { 
-                Console.WriteLine(tmpClient.UserName);
-                NetworkStream n = tmpClient.tcpclient.GetStream();
-                BinaryWriter w = new BinaryWriter(n);
-                var msg = new ErrorMessage("Server") { EMessage = " Server shutting down" };
-                w.Write(MessageHandler.Serialize(msg));
-                w.Flush();
+                try
+                {
+                    Console.WriteLine(tmpClient.UserName);
+                    NetworkStream n = tmpClient.tcpclient.GetStream();
+                    BinaryWriter w = new BinaryWriter(n);
+                    var msg = new ErrorMessage("Server") { EMessage = " Server shutting down" };
+                    w.Write(MessageHandler.Serialize(msg));
+                    w.Flush();
                 }
-                catch(Exception exx)
+                catch (Exception exx)
                 {
                     Console.WriteLine("Exit Method failed: " + exx.Message);
                 }
                 tmpClient.tcpclient.Close();
 
-                
-                
+
+
             }
             Console.WriteLine("Server Shuting down");
             if (listener != null)
