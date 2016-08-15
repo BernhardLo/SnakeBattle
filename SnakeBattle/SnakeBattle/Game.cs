@@ -367,8 +367,8 @@ namespace SnakeBattle
         public void DrawField(int mod)
         {
             Console.Clear();
-            if (mod == 1)
-                Console.BackgroundColor = ConsoleColor.Red;
+            if (mod != 0)
+                Console.ForegroundColor = ConsoleColor.Red;
 
             Console.Write("  ");
             for (int i = 0; i < _playFieldWidth; i++)
@@ -391,6 +391,7 @@ namespace SnakeBattle
                 Console.Write("|");
                 Console.WriteLine();
             }
+
             Console.Write("  ");
             for (int i = 0; i < _playFieldWidth; i++)
                 Console.Write("¯¯");
@@ -400,8 +401,18 @@ namespace SnakeBattle
             for (int i = 0; i < _currentGame.PlayerList.Count; i++)
             {
 
-                Console.SetCursorPosition(_playFieldWidth + 3, 3+i);
+                Console.SetCursorPosition((_playFieldWidth*2) + 5, 3+i);
                 Console.Write(_currentGame.PlayerList[i].PlayerName);
+            }
+            Console.SetCursorPosition(3, (_playFieldHeight * 2) + 3);
+            Console.Write("Antal steg kvar: ");
+
+            for (int i = 0; i < mod; i++)
+            {
+                Console.BackgroundColor = ConsoleColor.Green;
+                Console.Write("  ");
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.Write("  ");
             }
         }
 
@@ -518,13 +529,14 @@ namespace SnakeBattle
             // First time, if starting player is this player.
             if (_currentGame.StartingPlayer == _player.PlayerName)
             {
+                DrawField(3);
                 List<int[]> moveList = new List<int[]>();
                 moveList.Add(HandleMovement());
-                DrawField(1);
+                DrawField(2);
                 moveList.Add(HandleMovement());
                 DrawField(1);
                 moveList.Add(HandleMovement());
-                DrawField(1);
+                DrawField(0);
 
                 pm.MoveList = moveList;
                 pm.IsAlive = _player.IsAlive;
@@ -550,14 +562,15 @@ namespace SnakeBattle
 
                 if (apm.NextUser == _player.PlayerName)
                 { //todo: fixa antal steg per tur lite snyggare
+                    DrawField(3);
                     PlayMessage pmsg = new PlayMessage(_player.PlayerName);
                     List<int[]> moveList = new List<int[]>();
                     moveList.Add(HandleMovement());
-                    DrawField(1);
+                    DrawField(2);
                     moveList.Add(HandleMovement());
                     DrawField(1);
                     moveList.Add(HandleMovement());
-                    DrawField(1);
+                    DrawField(0);
 
                     pmsg.MoveList = moveList;
                     pmsg.IsAlive = _player.IsAlive;
