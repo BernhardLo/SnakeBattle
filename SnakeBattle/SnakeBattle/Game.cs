@@ -562,9 +562,9 @@ namespace SnakeBattle
                     moveList.Add(HandleMovement());
                     DrawField();
 
-                    pm.MoveList = moveList;
-                    pm.IsAlive = _player.IsAlive;
-                    pm.HostName = _currentGame.HostName;
+                    pmsg.MoveList = moveList;
+                    pmsg.IsAlive = _player.IsAlive;
+                    pmsg.HostName = _currentGame.HostName;
                     _nwc.Send(MessageHandler.Serialize(pmsg));
                     Console.WriteLine(MessageHandler.Serialize(pmsg));
                 }
@@ -594,9 +594,13 @@ namespace SnakeBattle
             // add colour and occupied to square.
             for (int i = 0; i < apm.MoveList.Count; i++)
             {
+                
                 int[] move = apm.MoveList[i];
                 int x = move[0];
                 int y = move[1];
+
+                if (x == -1 && y == -1)
+                    break;
 
                 Square square = _playField[x, y];
                 square.Color = oponentColour;
