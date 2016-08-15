@@ -404,7 +404,7 @@ namespace SnakeBattle
                 Console.SetCursorPosition((_playFieldWidth*2) + 5, 3+i);
                 Console.Write(_currentGame.PlayerList[i].PlayerName);
             }
-            Console.SetCursorPosition(3, (_playFieldHeight * 2) + 3);
+            Console.SetCursorPosition(3, _playFieldHeight + 3);
             Console.Write("Antal steg kvar: ");
 
             for (int i = 0; i < mod; i++)

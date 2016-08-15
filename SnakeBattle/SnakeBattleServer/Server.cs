@@ -68,25 +68,41 @@ namespace SnakeBattleServer
 
             int j = gr.PlayerList.IndexOf(temp);
 
-            if (pm.IsAlive == false && gr.PlayerList.IndexOf(temp) != gr.PlayerList.Count - 1)
+
+            if (!pm.IsAlive)
             {
+                if (gr.PlayerList.IndexOf(temp) != gr.PlayerList.Count - 1)
+                {
+                    j = 0;
+                }
                 gr.PlayerList.Remove(temp);
-                j = 0;
 
-            }
-            else if (pm.IsAlive == false)
+            } else if (pm.IsAlive)
             {
-                gr.PlayerList.Remove(temp);
-
-            }
-            else
-            {
-
                 if (j == gr.PlayerList.Count - 1)
                     j = 0;
                 else
                     j += 1;
             }
+            //if (pm.IsAlive == false && gr.PlayerList.IndexOf(temp) != gr.PlayerList.Count - 1)
+            //{
+            //    gr.PlayerList.Remove(temp);
+            //    j = 0;
+
+            //}
+            //else if (pm.IsAlive == false)
+            //{
+            //    gr.PlayerList.Remove(temp);
+
+            //}
+            //else
+            //{
+
+            //    if (j == gr.PlayerList.Count - 1)
+            //        j = 0;
+            //    else
+            //        j += 1;
+            //}
 
             foreach (var item in gr.PlayerList)
                 Console.WriteLine(item.PlayerName);
