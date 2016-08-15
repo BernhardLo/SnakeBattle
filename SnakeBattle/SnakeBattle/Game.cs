@@ -21,6 +21,7 @@ namespace SnakeBattle
         NetworkClient _nwc;
         const int _gamePort = 5000;
         private GameRoom _currentGame;
+        Thread _keyPressListener;
 
         /// <summary>
         /// Create player with playername "<empty>" as default, create a new networkclient and new Gameroom. 
@@ -543,14 +544,17 @@ namespace SnakeBattle
                 {
                     Console.WriteLine(MessageHandler.Serialize(apm));
                     // If recived message is not player add movement to squares
+
                     if (apm.UserName != _player.PlayerName) // JE 
                     {
                         DrawOponents(apm);// JE
                         DrawField(0);
+                        _keyPressListener = new Thread(keyPress);
                     }
 
                     if (apm.NextUser == _player.PlayerName)
                     {
+                        _keyPressListener.Abort();
                         PlayMessage pmsg = new PlayMessage(_player.PlayerName);
                         List<int[]> moveList = new List<int[]>();
                         for (int i = 3; i > 0; i--)
@@ -558,7 +562,6 @@ namespace SnakeBattle
                             DrawField(i);
                             moveList.Add(HandleMovement());
                         }
-                        DrawField(0);
                         DrawField(0);
 
                         pmsg.MoveList = moveList;
@@ -577,6 +580,12 @@ namespace SnakeBattle
             Console.Clear();
             Console.WriteLine(winnerName + " has won the game!!!"); //todo: rolig asciiart för vinnaren
             Console.ReadKey(true);
+        }
+
+        private void keyPress()
+        {
+            while (Console.KeyAvailable && _keyPressListener.IsAlive)
+                Console.ReadKey(false);
         }
 
 
