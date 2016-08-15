@@ -127,6 +127,7 @@ namespace SnakeBattleServer
         public void DisconnectClient(ClientHandler client)
         {
             Console.WriteLine(client.UserName + " has left the building...");
+
             //Broadcast(client, "Client X has left the building...");
             _clients.Remove(client);
         }
