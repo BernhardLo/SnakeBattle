@@ -571,12 +571,26 @@ namespace SnakeBattle
         {
             int leftoffset = 3;
             int topoffset = 2;
-            for (int y = 0; y < 5; y++)
+            for (int y = 0; y < 14; y++)
             {
-                for (int x = 0; x < 4; x++)
+                for (int x = 0; x < 13; x++)
                 {
+                    int color = Randomizer.Rng(0, 6);
+                    if (color == 0)
+                        Console.ForegroundColor = ConsoleColor.Red;
+                    if (color == 1)
+                        Console.ForegroundColor = ConsoleColor.Blue;
+                    if (color == 2)
+                        Console.ForegroundColor = ConsoleColor.Green;
+                    if (color == 3)
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                    if (color == 4)
+                        Console.ForegroundColor = ConsoleColor.Magenta;
+                    if (color == 5)
+                        Console.ForegroundColor = ConsoleColor.Cyan;
                     Console.SetCursorPosition((x * 12) + leftoffset, (y * 2) + topoffset);
                     Console.Write(winnerName);
+                    Console.ForegroundColor = ConsoleColor.White;
                 }
             }
         }
@@ -627,7 +641,6 @@ namespace SnakeBattle
                         if (item is PlayMessage)
                         {
                             tmp = item as PlayMessage;
-                            Console.WriteLine("PlayMessage received: " + myclock.ElapsedMilliseconds);
                             PlayMessage result = new PlayMessage(item.UserName);
                             result = tmp;
                             _nwc._commandList.Remove(item);
@@ -644,11 +657,6 @@ namespace SnakeBattle
                 } while (!valid);
                 return tmp;
             }
-        }
-
-        private bool WaitForTurn()
-        {
-            throw new NotImplementedException();
         }
 
         private void InsertPlayers()
