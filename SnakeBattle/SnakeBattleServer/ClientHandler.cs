@@ -95,21 +95,18 @@ namespace SnakeBattleServer
                             myServer.SendStartGameMessage(tmp.HostName);
                         }
                     }
+                    //todo: handle error messages
 
                 }
-                //myServer.Broadcast(this, message);
-
 
                 myServer.DisconnectClient(this);
                 tcpclient.Close();
-                //todo: ta bort användarenn ur clientlistan
             }
             catch (IOException)
             {
                 Console.WriteLine(this.UserName + " Remote client disconnected.");
                 myServer.DisconnectClient(this);
                 tcpclient.Close();
-                //todo: Visa IP på användaren som lämnar och ta bort ur clientlistan
             }
             catch (Exception ex)
             {

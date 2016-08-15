@@ -61,39 +61,34 @@ namespace SnakeBattle
             var msg = MessageHandler.Deserialize(message);
             if (msg is UserNameMessage)
             {
-                Console.WriteLine("adding " +msg.UserName); //todo: "test"
                 _commandList.Add(msg);
-                Console.WriteLine("Nu kom det ett username-message"); //todo: "Test"
             }
             else if (msg is FindGameMessage)
             {
                 _commandList.Add(msg);
-                Console.WriteLine("Nu kom det en lista av spelrum"); //todo: "test
                 
             }
             else if (msg is StartGameMessage)
             {
-                Console.WriteLine("Nu kom det ett startgamemessage"); //todo: "test"
                 Thread.Sleep(500); //todo: fulfix av thread.sleep
                 if (msg.UserName == _filterHostName)
-                    _commandList.Add(msg); // todo: Kolla om hostname är aktuellt
+                    _commandList.Add(msg);
 
             }
             else if (msg is PlayMessage)
             {
                 PlayMessage tmp = msg as PlayMessage;
                 if (tmp.HostName == _filterHostName)
-                    _commandList.Add(msg); // todo: Kolla om hostname är aktuellt
+                    _commandList.Add(msg);
             }
             else if (msg is JoinGameMessage)
             {
-                Console.WriteLine("Trying to join game"); //todo: "test"
                 if (msg.UserName == _filterUserName)
-                    _commandList.Add(msg); // todo: Kolla om hostname är aktuellt
+                    _commandList.Add(msg);
             }
             else if (msg is ErrorMessage)
             {
-                _commandList.Add(msg); // todo: Kolla om hostname är aktuellt
+                _commandList.Add(msg);
             }
 
         }
