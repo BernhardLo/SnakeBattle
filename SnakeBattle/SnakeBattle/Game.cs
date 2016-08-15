@@ -552,12 +552,18 @@ namespace SnakeBattle
                 }
                 if (apm.NextUser == _player.PlayerName)
                 { //todo: fixa antal steg per tur lite snyggare
-                    HandleMovement();
+                    List<int[]> moveList = new List<int[]>();
+                    moveList.Add(HandleMovement());
                     DrawField();
-                    HandleMovement();
+                    moveList.Add(HandleMovement());
                     DrawField();
-                    HandleMovement();
+                    moveList.Add(HandleMovement());
                     DrawField();
+
+                    pm.MoveList = moveList;
+                    pm.IsAlive = _player.IsAlive;
+                    pm.HostName = _currentGame.HostName;
+                    _nwc.Send(MessageHandler.Serialize(pm));
                 }
                 
 
