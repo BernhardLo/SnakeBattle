@@ -364,13 +364,17 @@ namespace SnakeBattle
 
         }
 
-        public void DrawField()
+        public void DrawField(int mod)
         {
             Console.Clear();
+            if (mod == 1)
+                Console.BackgroundColor = ConsoleColor.Red;
 
             Console.Write("  ");
             for (int i = 0; i < _playFieldWidth; i++)
+            {
                 Console.Write("__");
+            }
 
             Console.WriteLine();
 
@@ -383,28 +387,6 @@ namespace SnakeBattle
                     Console.BackgroundColor = square.Color;
                     Console.Write("  ");
                     Console.BackgroundColor = ConsoleColor.Black;
-
-
-
-                    //if (_player.Xpos == x && _player.Ypos == y)
-                    //{
-                    //    Console.BackgroundColor = ConsoleColor.Red;
-                    //    Console.Write("  ");
-                    //    Console.BackgroundColor = ConsoleColor.Black;
-                    //}
-                    //else
-                    //{
-                    //    if (!_playField[x, y].isOccupied)
-                    //    {
-                    //        Console.Write("  ");
-                    //    }
-                    //    else
-                    //    {
-                    //        Console.BackgroundColor = ConsoleColor.DarkRed;
-                    //        Console.Write("  ");
-                    //        Console.BackgroundColor = ConsoleColor.Black;
-                    //    }
-                    //}
                 }
                 Console.Write("|");
                 Console.WriteLine();
@@ -412,6 +394,15 @@ namespace SnakeBattle
             Console.Write("  ");
             for (int i = 0; i < _playFieldWidth; i++)
                 Console.Write("¯¯");
+
+            Console.ForegroundColor = ConsoleColor.White;
+
+            for (int i = 0; i < _currentGame.PlayerList.Count; i++)
+            {
+
+                Console.SetCursorPosition(_playFieldWidth + 3, 3+i);
+                Console.Write(_currentGame.PlayerList[i].PlayerName);
+            }
         }
 
         public int[] HandleMovement()
@@ -521,7 +512,7 @@ namespace SnakeBattle
             _playField = new Square[_playFieldWidth, _playFieldHeight];
             CreatePlayField();
             InsertPlayers();
-            DrawField();
+            DrawField(0);
             PlayMessage pm = new PlayMessage(_player.PlayerName);
 
             // First time, if starting player is this player.
@@ -529,11 +520,11 @@ namespace SnakeBattle
             {
                 List<int[]> moveList = new List<int[]>();
                 moveList.Add(HandleMovement());
-                DrawField();
+                DrawField(1);
                 moveList.Add(HandleMovement());
-                DrawField();
+                DrawField(1);
                 moveList.Add(HandleMovement());
-                DrawField();
+                DrawField(1);
 
                 pm.MoveList = moveList;
                 pm.IsAlive = _player.IsAlive;
@@ -554,7 +545,7 @@ namespace SnakeBattle
                 if (apm.UserName != _player.PlayerName) // JE 
                 {
                     DrawOponents(apm);// JE
-                    DrawField();
+                    DrawField(0);
                 }
 
                 if (apm.NextUser == _player.PlayerName)
@@ -562,11 +553,11 @@ namespace SnakeBattle
                     PlayMessage pmsg = new PlayMessage(_player.PlayerName);
                     List<int[]> moveList = new List<int[]>();
                     moveList.Add(HandleMovement());
-                    DrawField();
+                    DrawField(1);
                     moveList.Add(HandleMovement());
-                    DrawField();
+                    DrawField(1);
                     moveList.Add(HandleMovement());
-                    DrawField();
+                    DrawField(1);
 
                     pmsg.MoveList = moveList;
                     pmsg.IsAlive = _player.IsAlive;
