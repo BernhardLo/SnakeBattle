@@ -116,6 +116,8 @@ namespace SnakeBattleServer
                 Console.WriteLine(ex.Message);
             }
         }
+        
+
     }
 }
 

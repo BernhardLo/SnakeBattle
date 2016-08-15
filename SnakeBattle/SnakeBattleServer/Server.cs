@@ -68,19 +68,21 @@ namespace SnakeBattleServer
 
             int j = gr.PlayerList.IndexOf(temp);
 
-            if (pm.IsAlive == false && gr.PlayerList.IndexOf(temp) != gr.PlayerList.Count-1)
+            if (pm.IsAlive == false && gr.PlayerList.IndexOf(temp) != gr.PlayerList.Count - 1)
             {
                 gr.PlayerList.Remove(temp);
                 j = 0;
-                
-            } else if (pm.IsAlive == false)
+
+            }
+            else if (pm.IsAlive == false)
             {
                 gr.PlayerList.Remove(temp);
 
-            } else
+            }
+            else
             {
 
-                if (j == gr.PlayerList.Count-1)
+                if (j == gr.PlayerList.Count - 1)
                     j = 0;
                 else
                     j += 1;
@@ -123,7 +125,7 @@ namespace SnakeBattleServer
 
         public void Broadcast(string message)
         {
-            Console.WriteLine("Broadcasting: " +message);
+            Console.WriteLine("Broadcasting: " + message);
             foreach (ClientHandler tmpClient in _clients)
             {
                 NetworkStream n = tmpClient.tcpclient.GetStream();
@@ -147,7 +149,7 @@ namespace SnakeBattleServer
             string tmpStartingPlayer = gr.PlayerList[1].PlayerName; //todo: slumpa startspelare
             int xPos = 1;
             int yPos = 1;
-            ConsoleColor[] tmpColors = {ConsoleColor.Red, ConsoleColor.Blue, ConsoleColor.Green, ConsoleColor.White};
+            ConsoleColor[] tmpColors = { ConsoleColor.Red, ConsoleColor.Blue, ConsoleColor.Green, ConsoleColor.White };
 
             //todo: slumpa ut startpositioner
 
@@ -155,7 +157,7 @@ namespace SnakeBattleServer
             {
                 gr.PlayerList[i].Xpos = xPos;
                 gr.PlayerList[i].Ypos = yPos;
-                yPos+=4; xPos+=4;
+                yPos += 4; xPos += 4;
                 gr.PlayerList[i].Color = tmpColors[i];
             }
             gr.StartingPlayer = tmpStartingPlayer;
@@ -170,11 +172,26 @@ namespace SnakeBattleServer
 
         public void Dispose()
         {
-            foreach (var item in _clients)
+            //foreach (var item in _clients)
+            //{
+            //    item.Exit();
+            //}
+            //Console.WriteLine("Die Die");
+        }
+        public void Exit()
+        {
+            foreach (ClientHandler tmpClient in _clients)
             {
-                item.tcpclient.Close();
+                NetworkStream n = tmpClient.tcpclient.GetStream();
+                BinaryWriter w = new BinaryWriter(n);
+                var msg = new ErrorMessage("Server") { EMessage = " Server shutting down" };
+                w.Write(MessageHandler.Serialize(msg));
+                w.Flush();
+
+                tmpClient.tcpclient.Close();
+
+
             }
-            Console.WriteLine("Die Die");
         }
     }
 }
