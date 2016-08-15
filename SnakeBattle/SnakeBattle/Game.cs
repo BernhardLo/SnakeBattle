@@ -545,8 +545,15 @@ namespace SnakeBattle
                         List<int[]> moveList = new List<int[]>();
                         for (int i = 3; i > 0; i--)
                         {
-                            DrawField(i);
-                            moveList.Add(HandleMovement());
+                            if (_player.IsAlive)
+                            {
+                                DrawField(i);
+                                moveList.Add(HandleMovement());
+                            } else
+                            {
+                                i = 0;
+                                DrawField(i);
+                            }
                         }
                         DrawField(0);
 
@@ -571,9 +578,9 @@ namespace SnakeBattle
         {
             int leftoffset = 3;
             int topoffset = 2;
-            for (int y = 0; y < 14; y++)
+            for (int y = 0; y < 9; y++)
             {
-                for (int x = 0; x < 13; x++)
+                for (int x = 0; x < 8; x++)
                 {
                     int color = Randomizer.Rng(0, 6);
                     if (color == 0)
