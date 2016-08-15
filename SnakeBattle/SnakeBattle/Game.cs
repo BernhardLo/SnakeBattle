@@ -523,6 +523,7 @@ namespace SnakeBattle
             DrawField();
             PlayMessage pm = new PlayMessage(_player.PlayerName);
 
+            // First time, if starting player is this player.
             if (_currentGame.StartingPlayer == _player.PlayerName)
             {
                 List<int[]> moveList = new List<int[]>();
@@ -543,6 +544,12 @@ namespace SnakeBattle
             {
                 PlayMessage apm = WaitForPlayMessage();
                 Console.WriteLine(apm.ToString());
+                // If recived message is not player add movement to squares
+                if (apm.UserName != _player.PlayerName) // JE 
+                {
+                    DrawOponents(apm);// JE
+                    DrawField();
+                }
                 if (apm.NextUser == _player.PlayerName)
                 { //todo: fixa antal steg per tur lite snyggare
                     HandleMovement();
@@ -552,11 +559,39 @@ namespace SnakeBattle
                     HandleMovement();
                     DrawField();
                 }
-                DrawField();
+                
+
+                //DrawField();
 
             } while (_player.IsAlive);
 
             Console.WriteLine("Game Over");
+        }
+
+
+        /// <summary>
+        /// This function will from a PlayMessage add colour and set IsOccupied property of affected squares.
+        /// </summary>
+        /// <param name="apm"> The parameter is a play message recived from the server and should not be _player</param>
+        private void DrawOponents(PlayMessage apm) // JE
+        {
+            // Read player and find corresponding colour.
+            Player Oponent = _currentGame.PlayerList.Where(x => x.PlayerName == apm.UserName).SingleOrDefault();
+            ConsoleColor oponentColour = Oponent.Color;
+
+            // Read movement (get xMovement, get yMovement)
+            // add colour and occupied to square.
+            for (int i = 0; i < apm.MoveList.Count; i++)
+            {
+                int[] move = apm.MoveList[i];
+                int x = move[0];
+                int y = move[1];
+
+                Square square = _playField[x, y];
+                square.Color = oponentColour;
+                square.isOccupied = true;
+            }
+
         }
 
         private PlayMessage WaitForPlayMessage()
