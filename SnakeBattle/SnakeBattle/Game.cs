@@ -543,15 +543,17 @@ namespace SnakeBattle
             do
             {
                 PlayMessage apm = WaitForPlayMessage();
-                Console.WriteLine(apm.ToString());
+                Console.WriteLine(MessageHandler.Serialize(apm));
                 // If recived message is not player add movement to squares
                 if (apm.UserName != _player.PlayerName) // JE 
                 {
                     DrawOponents(apm);// JE
                     DrawField();
                 }
+
                 if (apm.NextUser == _player.PlayerName)
                 { //todo: fixa antal steg per tur lite snyggare
+                    PlayMessage pmsg = new PlayMessage(_player.PlayerName);
                     List<int[]> moveList = new List<int[]>();
                     moveList.Add(HandleMovement());
                     DrawField();
@@ -563,7 +565,8 @@ namespace SnakeBattle
                     pm.MoveList = moveList;
                     pm.IsAlive = _player.IsAlive;
                     pm.HostName = _currentGame.HostName;
-                    _nwc.Send(MessageHandler.Serialize(pm));
+                    _nwc.Send(MessageHandler.Serialize(pmsg));
+                    Console.WriteLine(MessageHandler.Serialize(pmsg));
                 }
                 
 
@@ -571,7 +574,9 @@ namespace SnakeBattle
 
             } while (_player.IsAlive);
 
+            Console.Clear(); //todo: "test"
             Console.WriteLine("Game Over");
+            Console.ReadKey(); //todo: "test"
         }
 
 
