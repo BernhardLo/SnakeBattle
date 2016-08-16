@@ -100,9 +100,11 @@ namespace SnakeBattleServer
                     {
                         errorList.Add(msg);
                         if (errorList.Count > 10)
+                        {
                             myServer.DisconnectClient(this);
+                            tcpclient.Close();
+                        }
                     }
-                    //todo: handle error messages
 
                 }
 

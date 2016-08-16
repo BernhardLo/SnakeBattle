@@ -198,13 +198,11 @@ namespace SnakeBattleServer
         internal void SendStartGameMessage(string hostName)
         {
             GameRoom gr = _games.Where(c => c.HostName == hostName).SingleOrDefault();
-            string tmpStartingPlayer = gr.PlayerList[1].PlayerName; //todo: slumpa startspelare
+            string tmpStartingPlayer = gr.PlayerList[Randomizer.Rng(0, gr.PlayerList.Count)].PlayerName;
             int xPos = 1;
             int yPos = 1;
             ConsoleColor[] tmpColors = { ConsoleColor.Red, ConsoleColor.Blue, ConsoleColor.Green, ConsoleColor.Yellow ,
                                         ConsoleColor.Magenta, ConsoleColor.Cyan, ConsoleColor.DarkCyan, ConsoleColor.DarkRed};
-
-            //todo: slumpa ut startpositioner
 
             for (int i = 0; i < gr.PlayerList.Count; i++)
             {

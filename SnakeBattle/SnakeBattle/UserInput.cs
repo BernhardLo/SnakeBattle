@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace SnakeBattle
 {
@@ -43,9 +44,10 @@ namespace SnakeBattle
                 userName = GetString();
                 if (!String.IsNullOrWhiteSpace(userName))
                 {
-                    //todo: inmatningskontroller för användarnamn
-                    //man får inte heta "Error" eller "<empty>"
-                    if (true)
+
+                    string pattern = @"^[a-zA-Z0-9åäöÅÄÖ]+$";
+                    Match result = Regex.Match(userName, pattern);
+                    if (userName.Length < 14 && userName != "<empty>" && result.Success)
                     {
                         valid = true;
                     }

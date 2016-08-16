@@ -70,7 +70,7 @@ namespace SnakeBattle
             }
             else if (msg is StartGameMessage)
             {
-                Thread.Sleep(500); //todo: fulfix av thread.sleep
+                Thread.Sleep(500);
                 if (msg.UserName == _filterHostName)
                     _commandList.Add(msg);
 

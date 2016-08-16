@@ -657,7 +657,6 @@ namespace SnakeBattle
                         {
                             tmp = item as PlayMessage;
 
-                            //todo: ställ in "isAlive" till _currentgame från inkommande playmessage
                             foreach (var player in _currentGame.PlayerList)
                             {
                                 if (player.PlayerName == tmp.UserName)
