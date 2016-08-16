@@ -17,6 +17,7 @@ namespace SnakeBattleServer
         public string UserName { get; set; }
         public TcpClient tcpclient;
         private Server myServer;
+        private List<Message> errorList = new List<Message>();
         public ClientHandler(TcpClient c, Server server)
         {
             tcpclient = c;
@@ -94,6 +95,13 @@ namespace SnakeBattleServer
                         {
                             myServer.SendStartGameMessage(tmp.HostName);
                         }
+                    }
+                    else if (msg is ErrorMessage)
+                    {
+                        errorList.Add(msg);
+                        if (errorList.Count > 10)
+                            myServer.DisconnectClient(this);
+
                     }
                     //todo: handle error messages
 
