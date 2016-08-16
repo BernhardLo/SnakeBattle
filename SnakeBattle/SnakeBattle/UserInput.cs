@@ -47,7 +47,7 @@ namespace SnakeBattle
 
                     string pattern = @"^[a-zA-Z0-9åäöÅÄÖ]+$";
                     Match result = Regex.Match(userName, pattern);
-                    if (userName.Length < 14 && userName != "<empty>" && result.Success)
+                    if (userName.Length < 14 && userName.Length > 2 && userName != "<empty>" && result.Success)
                     {
                         valid = true;
                     }

@@ -675,7 +675,7 @@ namespace SnakeBattle
                 int x = move[0];
                 int y = move[1];
 
-                if (x == -1 && y == -1)
+                if (x == -1 || y == -1)
                     break;
 
                 Square square = _playField[x, y];
@@ -706,6 +706,7 @@ namespace SnakeBattle
                             {
                                 if (player.PlayerName == tmp.UserName)
                                     player.IsAlive = tmp.IsAlive;
+                                
                             }
 
                             PlayMessage result = new PlayMessage(item.UserName);
