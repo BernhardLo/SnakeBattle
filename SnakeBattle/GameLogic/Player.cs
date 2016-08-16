@@ -13,6 +13,7 @@ namespace GameLogic
         public int Ypos { get; set; }
         public bool IsAlive { get; set; }
         public ConsoleColor Color { get; set; }
+        public Direction Direction { get; set; }
         public Player(string PlayerName)
         {
             this.PlayerName = PlayerName;

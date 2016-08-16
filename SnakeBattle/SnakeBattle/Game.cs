@@ -410,28 +410,73 @@ namespace SnakeBattle
         public int[] HandleMovement()
         {
 
-            ConsoleKeyInfo keyInfo = Console.ReadKey(true);
             int newX = _player.Xpos;
             int newY = _player.Ypos;
             int[] result = new int[2] { -1, -1 };
 
-            switch (keyInfo.Key)
+            bool validMove = false;
+
+            do
             {
-                case ConsoleKey.RightArrow:
-                    newX++;
-                    break;
-                case ConsoleKey.LeftArrow:
-                    newX--;
-                    break;
-                case ConsoleKey.DownArrow:
-                    newY++;
-                    break;
-                case ConsoleKey.UpArrow:
-                    newY--;
-                    break;
-                default:
-                    break;
-            }
+
+                ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+                switch (keyInfo.Key)
+                {
+                    case ConsoleKey.D:
+                    case ConsoleKey.RightArrow:
+                        if (_player.Direction != Direction.Left)
+                        {
+                            _player.Direction = Direction.Right;
+                            newX++;
+                            validMove = true;
+                            break;
+                        } else
+                        {
+                            break;
+                        }
+                    case ConsoleKey.A:
+                    case ConsoleKey.LeftArrow:
+                        if (_player.Direction != Direction.Right)
+                        {
+                            _player.Direction = Direction.Left;
+                            newX--;
+                            validMove = true;
+                            break;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    case ConsoleKey.S:
+                    case ConsoleKey.DownArrow:
+                        if (_player.Direction != Direction.Up)
+                        {
+                            _player.Direction = Direction.Down;
+                            newY++;
+                            validMove = true;
+                            break;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    case ConsoleKey.W:
+                    case ConsoleKey.UpArrow:
+                        if (_player.Direction != Direction.Down)
+                        {
+                            _player.Direction = Direction.Up;
+                            newY--;
+                            validMove = true;
+                            break;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    default:
+                        break;
+                }
+            } while (!validMove);
 
             try
             {

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SnakeBattle
+namespace GameLogic
 {
-    enum Direction
+    public enum Direction
     {
         Up = 0,
         Right = 1,
