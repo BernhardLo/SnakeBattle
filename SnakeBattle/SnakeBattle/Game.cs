@@ -52,6 +52,34 @@ namespace SnakeBattle
         public void Play()
         {
             //Ansluter till servern och skriver ut IP-adressen om det lyckades
+            bool proceed = false;
+
+            do
+            {
+                PrintFirstMenu();
+
+                int menuChoice = UserInput.GetInt();
+
+                switch (menuChoice)
+                {
+                    case 0:
+                        Console.WriteLine("Programmet avslutas...");
+                        Environment.Exit(0);
+                        break;
+                    case 1:
+                        Console.WriteLine("Anslut till servern");
+                        proceed = true;
+                        break;
+                    case 2:
+                        Console.WriteLine("Spela ensam");
+                        RunSinglePlayer();
+                        break;
+                    default:
+                        Console.WriteLine("Felaktig inmatning");
+                        break;
+                }
+            } while (!proceed);
+
             Console.WriteLine(ConnectToServer());
 
             //skickar ett usernamemessage till servern, som i sin tur kontrollerar om namnet är ledigt.
@@ -81,12 +109,23 @@ namespace SnakeBattle
                         Console.WriteLine("Visa tillgängliga spel");
                         ListAvailableGames();
                         break;
+                    case 4:
+                        Console.WriteLine("Spela ensam");
+                        RunSinglePlayer();
+                        break;
                     default:
-                        Console.WriteLine("felaktig inmatning");
+                        Console.WriteLine("Felaktig inmatning");
                         break;
                 }
 
             } while (true);
+        }
+
+        private void PrintFirstMenu()
+        {
+            Console.WriteLine("0: Avsluta");
+            Console.WriteLine("1: Anslut till servern");
+            Console.WriteLine("2: Spela ensam");
         }
 
         /// <summary>
@@ -389,7 +428,7 @@ namespace SnakeBattle
                 Console.BackgroundColor = _currentGame.PlayerList[i].Color;
                 Console.Write("  ");
                 Console.BackgroundColor = ConsoleColor.Black;
-                Console.Write(" " +_currentGame.PlayerList[i].PlayerName + " ");
+                Console.Write($" {_currentGame.PlayerList[i].PlayerName} X:{_currentGame.PlayerList[i].Xpos} Y:{_currentGame.PlayerList[i].Ypos} Dir:{_currentGame.PlayerList[i].Direction}");
                 if (!_currentGame.PlayerList[i].IsAlive)
                 {
                     Console.Write("(R.I.P.)");
@@ -430,7 +469,8 @@ namespace SnakeBattle
                             newX++;
                             validMove = true;
                             break;
-                        } else
+                        }
+                        else
                         {
                             break;
                         }
@@ -509,6 +549,7 @@ namespace SnakeBattle
             Console.WriteLine("1: Starta nytt spel");
             Console.WriteLine("2: Anslut till spel");
             Console.WriteLine("3: Visa tillgängliga spel");
+            Console.WriteLine("4: Spela ensam");
         }
         private void WaitingRoom()
         {
@@ -598,7 +639,8 @@ namespace SnakeBattle
                             {
                                 DrawField(i);
                                 moveList.Add(HandleMovement());
-                            } else
+                            }
+                            else
                             {
                                 i = 0;
                                 DrawField(i);
@@ -622,6 +664,251 @@ namespace SnakeBattle
             PrintWinner(winnerName);
             Console.ReadKey(true);
             Console.Clear();
+        }
+
+        private void RunSinglePlayer()
+        {
+            bool gameIsWon = false;
+            _playField = new Square[_playFieldWidth, _playFieldHeight];
+            CreatePlayField();
+            SinglePlayer.ClearPosList();
+            _player = SinglePlayer.CreateOwnPlayer();
+            _currentGame.PlayerList.Add(_player);
+
+            int numberOfPlayers = UserInput.GetIntFiltered("Ange antal spelare (2-8)", 2, 8);
+            for (int i = 1; i < numberOfPlayers; i++)
+            {
+                _currentGame.PlayerList.Add(SinglePlayer.CreatePlayer(i));
+            }
+
+            InsertPlayers();
+
+            do
+            {
+                for (int i = 3; i > 0; i--)
+                {
+                    if (!HandleMovementSP(i))
+                    {
+                        gameIsWon = true;
+                        Console.Clear();
+                        break;
+                    }
+
+                }
+
+                for (int i = 1; i < _currentGame.PlayerList.Count; i++)
+                {
+                    for (int k = 0; k < 3; k++)
+                    {
+                        int[] aiMoves = HandleAImovement(_currentGame.PlayerList[i]);
+                        _currentGame.PlayerList[i].Xpos = aiMoves[0];
+                        _currentGame.PlayerList[i].Ypos = aiMoves[1];
+                        _playField[aiMoves[0], aiMoves[1]].Color = _currentGame.PlayerList[i].Color;
+                        _playField[aiMoves[0], aiMoves[1]].isOccupied = true;
+                        DrawField(0);
+                        Thread.Sleep(200);
+                        if (!_currentGame.PlayerList[i].IsAlive)
+                            break;
+                    }
+                    Thread.Sleep(400);
+                }
+
+            } while (!gameIsWon);
+        }
+
+        public int[] HandleAImovement(Player player)
+        {
+            //None = 0,
+            //Up = 1,
+            //Right = 2,
+            //Down = 3,
+            //Left = 4
+
+            int[] result = new int[2] { player.Xpos, player.Ypos };
+
+            if (player.Direction == Direction.None)
+            {
+                Console.Clear();
+                int direct = Randomizer.Rng(1, 5);
+                Console.WriteLine(direct);
+                player.Direction = (Direction)direct;
+                Console.ReadKey();
+            }
+
+
+            //player.Direction = (Direction)4;
+
+            if (/*Randomizer.Try(100)*/ true) //try to move forward
+            {
+                if (player.Direction == Direction.Up && player.Ypos > 0 && !_playField[player.Xpos, player.Ypos - 1].isOccupied)
+                {
+                    return new int[2] { player.Xpos, player.Ypos - 1 };
+                } else if (player.Xpos < _playFieldWidth - 1 && !_playField[player.Xpos + 1, player.Ypos].isOccupied) //turn right
+                {
+                    player.Direction = Direction.Right;
+                    return new int[2] { player.Xpos + 1, player.Ypos };
+                } else if (player.Xpos > 0 && !_playField[player.Xpos - 1, player.Ypos].isOccupied) //turn left
+                {
+                    player.Direction = Direction.Left;
+                    return new int[2] { player.Xpos - 1, player.Ypos };
+                } else // dead
+                {
+                    player.IsAlive = false;
+                    return new int[2] { player.Xpos, player.Ypos };
+                }
+
+
+                if (player.Direction == Direction.Down && player.Ypos < _playFieldHeight - 1 && !_playField[player.Xpos, player.Ypos + 1].isOccupied)
+                {
+                    return new int[2] { player.Xpos, player.Ypos + 1 };
+                } else if (player.Xpos < _playFieldWidth - 1 && !_playField[player.Xpos + 1, player.Ypos].isOccupied) //turn right
+                {
+                    player.Direction = Direction.Right;
+                    return new int[2] { player.Xpos + 1, player.Ypos };
+                } else if (player.Xpos > 0 && !_playField[player.Xpos - 1, player.Ypos].isOccupied) //turn left
+                {
+                    player.Direction = Direction.Left;
+                    return new int[2] { player.Xpos - 1, player.Ypos };
+                } else //dead
+                {
+                    player.IsAlive = false;
+                    return new int[2] { player.Xpos, player.Ypos };
+                }
+
+
+                if (player.Direction == Direction.Left && player.Xpos > 0 && !_playField[player.Xpos - 1, player.Ypos].isOccupied)
+                {
+                    return new int[2] { player.Xpos - 1, player.Ypos };
+                } else if (player.Ypos > 0 && !_playField[player.Xpos, player.Ypos - 1].isOccupied) //turn upwards
+                {
+                    player.Direction = Direction.Up;
+                    return new int[2] { player.Xpos, player.Ypos - 1 };
+                } else if (player.Ypos < _playFieldHeight - 1 && !_playField[player.Xpos, player.Ypos + 1].isOccupied) //turn downwards
+                {
+                    player.Direction = Direction.Down;
+                    return new int[2] { player.Xpos, player.Ypos + 1 };
+                } else
+                {
+                    player.IsAlive = false;
+                    return new int[2] { player.Xpos, player.Ypos };
+                }
+
+
+                if (player.Direction == Direction.Right && player.Xpos < _playFieldWidth - 1 && !_playField[player.Xpos + 1, player.Ypos].isOccupied)
+                {
+                    return new int[2] { player.Xpos + 1, player.Ypos };
+                } else if (player.Ypos > 0 && !_playField[player.Xpos, player.Ypos - 1].isOccupied) //turn upwards
+                {
+                    player.Direction = Direction.Up;
+                    return new int[2] { player.Xpos, player.Ypos - 1 };
+                } else if (player.Ypos < _playFieldHeight - 1 && !_playField[player.Xpos, player.Ypos + 1].isOccupied) //turn downwards
+                {
+                    player.Direction = Direction.Down;
+                    return new int[2] { player.Xpos, player.Ypos + 1 };
+                } else
+                {
+                    player.IsAlive = false;
+                    return new int[2] { player.Xpos, player.Ypos };
+                }
+            } else //try to turn
+            {
+                Console.Clear();
+                Console.WriteLine("error");
+                Console.ReadKey();
+            }
+
+            return new int[2] { player.Xpos, player.Ypos };
+        }
+
+        private bool HandleMovementSP(int movesLeft)
+        {
+            DrawField(movesLeft);
+            int newX = _player.Xpos;
+            int newY = _player.Ypos;
+            bool validMove = false;
+
+            do
+            {
+                ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+                switch (keyInfo.Key)
+                {
+                    case ConsoleKey.D:
+                    case ConsoleKey.RightArrow:
+                        if (_player.Direction != Direction.Left)
+                        {
+                            _player.Direction = Direction.Right;
+                            newX++;
+                            validMove = true;
+                            break;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    case ConsoleKey.A:
+                    case ConsoleKey.LeftArrow:
+                        if (_player.Direction != Direction.Right)
+                        {
+                            _player.Direction = Direction.Left;
+                            newX--;
+                            validMove = true;
+                            break;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    case ConsoleKey.S:
+                    case ConsoleKey.DownArrow:
+                        if (_player.Direction != Direction.Up)
+                        {
+                            _player.Direction = Direction.Down;
+                            newY++;
+                            validMove = true;
+                            break;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    case ConsoleKey.W:
+                    case ConsoleKey.UpArrow:
+                        if (_player.Direction != Direction.Down)
+                        {
+                            _player.Direction = Direction.Up;
+                            newY--;
+                            validMove = true;
+                            break;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    default:
+                        break;
+                }
+            } while (!validMove);
+
+            try
+            {
+                if (_playField[newX, newY].isOccupied)
+                {
+                    _player.IsAlive = false;
+                }
+                else
+                {
+                    _playField[newX, newY].Color = _player.Color;
+                    _playField[newX, newY].isOccupied = true;
+                    _player.Xpos = newX;
+                    _player.Ypos = newY;
+                }
+            }
+            catch (IndexOutOfRangeException IORex)
+            {
+                _player.IsAlive = false;
+            }
+
+            return _player.IsAlive;
         }
 
         private void PrintWinner(string winnerName)
@@ -706,7 +993,7 @@ namespace SnakeBattle
                             {
                                 if (player.PlayerName == tmp.UserName)
                                     player.IsAlive = tmp.IsAlive;
-                                
+
                             }
 
                             PlayMessage result = new PlayMessage(item.UserName);

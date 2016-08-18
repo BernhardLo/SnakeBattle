@@ -195,7 +195,15 @@ namespace SnakeBattleServer
                     {
                         gr.PlayerList[i].Xpos = x;
                         gr.PlayerList[i].Ypos = y;
+                        startPos.Add(new int[2] { x-1, y-1 });
+                        startPos.Add(new int[2] { x-1, y });
+                        startPos.Add(new int[2] { x-1, y+1 });
+                        startPos.Add(new int[2] { x, y-1 });
                         startPos.Add(new int[2] { x, y });
+                        startPos.Add(new int[2] { x, y+1 });
+                        startPos.Add(new int[2] { x+1, y-1 });
+                        startPos.Add(new int[2] { x+1, y });
+                        startPos.Add(new int[2] { x+1, y+1 });
                         validPlacement = true;
                     }
 
