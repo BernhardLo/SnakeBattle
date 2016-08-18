@@ -728,15 +728,8 @@ namespace SnakeBattle
 
             if (player.Direction == Direction.None)
             {
-                Console.Clear();
-                int direct = Randomizer.Rng(1, 5);
-                Console.WriteLine(direct);
-                player.Direction = (Direction)direct;
-                Console.ReadKey();
+                player.Direction = (Direction)Randomizer.Rng(1, 5);
             }
-
-
-            //player.Direction = (Direction)4;
 
             if (/*Randomizer.Try(100)*/ true) //try to move forward
             {
