@@ -716,6 +716,26 @@ namespace SnakeBattle
             } while (!gameIsWon);
         }
 
+        private bool CanMoveUp(Player p)
+        {
+            return p.Ypos > 0 && _playField[p.Xpos, p.Ypos - 1].isOccupied == false;
+        }
+
+        private bool CanMoveDown(Player p)
+        {
+            return p.Ypos < _playFieldHeight - 1 && _playField[p.Xpos, p.Ypos + 1].isOccupied == false;
+        }
+
+        private bool CanMoveRight(Player p)
+        {
+            return p.Xpos < _playFieldWidth - 1 && _playField[p.Xpos + 1, p.Ypos].isOccupied == false;
+        }
+
+        private bool CanMoveLeft(Player p)
+        {
+            return p.Xpos > 0 && _playField[p.Xpos - 1, p.Ypos].isOccupied == false;
+        }
+
         public int[] HandleAImovement(Player player)
         {
             //None = 0,
@@ -731,86 +751,179 @@ namespace SnakeBattle
                 player.Direction = (Direction)Randomizer.Rng(1, 5);
             }
 
-            if (/*Randomizer.Try(100)*/ true) //try to move forward
+            if (/*Randomizer.Try(75)*/ true) // 75% to try moving forward first
             {
-                if (player.Direction == Direction.Up && player.Ypos > 0 && !_playField[player.Xpos, player.Ypos - 1].isOccupied)
+                if (player.Direction == Direction.Up) //One of 4 possible directions
                 {
-                    return new int[2] { player.Xpos, player.Ypos - 1 };
-                } else if (player.Xpos < _playFieldWidth - 1 && !_playField[player.Xpos + 1, player.Ypos].isOccupied) //turn right
-                {
-                    player.Direction = Direction.Right;
-                    return new int[2] { player.Xpos + 1, player.Ypos };
-                } else if (player.Xpos > 0 && !_playField[player.Xpos - 1, player.Ypos].isOccupied) //turn left
-                {
-                    player.Direction = Direction.Left;
-                    return new int[2] { player.Xpos - 1, player.Ypos };
-                } else // dead
-                {
-                    player.IsAlive = false;
-                    return new int[2] { player.Xpos, player.Ypos };
+                    if (CanMoveUp(player))
+                    {
+                        result[1] -= 1;
+                    } else if (Randomizer.Try(50)) //cant move forward, 50% to try moving right first
+                    {
+                        if (CanMoveRight(player))
+                        {
+                            player.Direction = Direction.Right;
+                            result[0] += 1;
+                        } else if (CanMoveLeft(player))
+                        {
+                            player.Direction = Direction.Left;
+                            result[0] -= 1;
+                        }
+                        else
+                        {
+                            player.IsAlive = false;
+                        }
+
+                    } else                          //50% failed, try moving left first
+                    {
+                        if (CanMoveLeft(player))
+                        {
+                            player.Direction = Direction.Left;
+                            result[0] -= 1;
+                        } else if (CanMoveRight(player))
+                        {
+                            player.Direction = Direction.Right;
+                            result[0] += 1;
+                        }
+                        else
+                        {
+                            player.IsAlive = false;
+                        }
+                    }
                 }
 
 
-                if (player.Direction == Direction.Down && player.Ypos < _playFieldHeight - 1 && !_playField[player.Xpos, player.Ypos + 1].isOccupied)
+                else if (player.Direction == Direction.Down) //One of 4 possible directions
                 {
-                    return new int[2] { player.Xpos, player.Ypos + 1 };
-                } else if (player.Xpos < _playFieldWidth - 1 && !_playField[player.Xpos + 1, player.Ypos].isOccupied) //turn right
-                {
-                    player.Direction = Direction.Right;
-                    return new int[2] { player.Xpos + 1, player.Ypos };
-                } else if (player.Xpos > 0 && !_playField[player.Xpos - 1, player.Ypos].isOccupied) //turn left
-                {
-                    player.Direction = Direction.Left;
-                    return new int[2] { player.Xpos - 1, player.Ypos };
-                } else //dead
-                {
-                    player.IsAlive = false;
-                    return new int[2] { player.Xpos, player.Ypos };
+                    if (CanMoveDown(player))
+                    {
+                        result[1] += 1;
+                    }
+                    else if (Randomizer.Try(50))
+                    {
+                        if (CanMoveRight(player))
+                        {
+                            player.Direction = Direction.Right;
+                            result[0] += 1;
+                        }
+                        else if (CanMoveLeft(player))
+                        {
+                            player.Direction = Direction.Left;
+                            result[0] -= 1;
+                        }
+                        else
+                        {
+                            player.IsAlive = false;
+                        }
+
+                    } else
+                    {
+                        if (CanMoveLeft(player))
+                        {
+                            player.Direction = Direction.Left;
+                            result[0] -= 1;
+                        }
+                        else if (CanMoveRight(player))
+                        {
+                            player.Direction = Direction.Right;
+                            result[0] += 1;
+                        }
+                        else
+                        {
+                            player.IsAlive = false;
+                        }
+                    }
                 }
 
+                else if (player.Direction == Direction.Right) //One of 4 possible directions
+                {
+                    if (CanMoveRight(player))
+                    {
+                        result[0] += 1;
+                    } else if (Randomizer.Try(50))
+                    {
+                        if (CanMoveUp(player))
+                        {
+                            player.Direction = Direction.Up;
+                            result[1] -= 1;
+                        } else if (CanMoveDown(player))
+                        {
+                            player.Direction = Direction.Down;
+                            result[1] += 1;
+                        }
+                        else
+                        {
+                            player.IsAlive = false;
+                        }
+                    } else
+                    {
+                        if (CanMoveDown(player))
+                        {
+                            player.Direction = Direction.Down;
+                            result[1] += 1;
+                        } else if (CanMoveUp(player))
+                        {
+                            player.Direction = Direction.Up;
+                            result[1] -= 1;
+                        }
+                        else
+                        {
+                            player.IsAlive = false;
+                        }
+                    }
+                }
 
-                if (player.Direction == Direction.Left && player.Xpos > 0 && !_playField[player.Xpos - 1, player.Ypos].isOccupied)
+                else if (player.Direction == Direction.Left) //One of 4 possible directions
                 {
-                    return new int[2] { player.Xpos - 1, player.Ypos };
-                } else if (player.Ypos > 0 && !_playField[player.Xpos, player.Ypos - 1].isOccupied) //turn upwards
+                    if (CanMoveLeft(player))
+                    {
+                        result[0] -= 1;
+                    } else if (Randomizer.Try(50))
+                    {
+                        if (CanMoveUp(player))
+                        {
+                            player.Direction = Direction.Up;
+                            result[1] -= 1;
+                        }
+                        else if (CanMoveDown(player))
+                        {
+                            player.Direction = Direction.Down;
+                            result[1] += 1;
+                        }
+                        else
+                        {
+                            player.IsAlive = false;
+                        }
+                    } else
+                    {
+                        if (CanMoveDown(player))
+                        {
+                            result[1] += 1;
+                        }
+                        else if (CanMoveUp(player))
+                        {
+                            result[1] -= 1;
+                        }
+                        else
+                        {
+                            player.IsAlive = false;
+                        }
+                    }
+                }
+                //end 75%
+
+                else if (Randomizer.Try(50)) //75% failed, 50% to try either left or right first
                 {
-                    player.Direction = Direction.Up;
-                    return new int[2] { player.Xpos, player.Ypos - 1 };
-                } else if (player.Ypos < _playFieldHeight - 1 && !_playField[player.Xpos, player.Ypos + 1].isOccupied) //turn downwards
-                {
-                    player.Direction = Direction.Down;
-                    return new int[2] { player.Xpos, player.Ypos + 1 };
+
                 } else
                 {
-                    player.IsAlive = false;
-                    return new int[2] { player.Xpos, player.Ypos };
-                }
 
-
-                if (player.Direction == Direction.Right && player.Xpos < _playFieldWidth - 1 && !_playField[player.Xpos + 1, player.Ypos].isOccupied)
-                {
-                    return new int[2] { player.Xpos + 1, player.Ypos };
-                } else if (player.Ypos > 0 && !_playField[player.Xpos, player.Ypos - 1].isOccupied) //turn upwards
-                {
-                    player.Direction = Direction.Up;
-                    return new int[2] { player.Xpos, player.Ypos - 1 };
-                } else if (player.Ypos < _playFieldHeight - 1 && !_playField[player.Xpos, player.Ypos + 1].isOccupied) //turn downwards
-                {
-                    player.Direction = Direction.Down;
-                    return new int[2] { player.Xpos, player.Ypos + 1 };
-                } else
-                {
-                    player.IsAlive = false;
-                    return new int[2] { player.Xpos, player.Ypos };
                 }
-            } else //try to turn
-            {
-                Console.Clear();
-                Console.WriteLine("error");
-                Console.ReadKey();
+                
             }
 
-            return new int[2] { player.Xpos, player.Ypos };
+            return result;
+
         }
 
         private bool HandleMovementSP(int movesLeft)
