@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -71,7 +72,7 @@ namespace SnakeBattle
                         proceed = true;
                         break;
                     case 2:
-                        Console.WriteLine("Spela ensam");
+                        Console.WriteLine("Spela mot datorn");
                         RunSinglePlayer();
                         break;
                     default:
@@ -110,7 +111,7 @@ namespace SnakeBattle
                         ListAvailableGames();
                         break;
                     case 4:
-                        Console.WriteLine("Spela ensam");
+                        Console.WriteLine("Spela mot datorn");
                         RunSinglePlayer();
                         break;
                     default:
@@ -125,7 +126,7 @@ namespace SnakeBattle
         {
             Console.WriteLine("0: Avsluta");
             Console.WriteLine("1: Anslut till servern");
-            Console.WriteLine("2: Spela ensam");
+            Console.WriteLine("2: Spela mot datorn");
         }
 
         /// <summary>
@@ -275,10 +276,10 @@ namespace SnakeBattle
         {
             string serverIP = "";
             bool connected = false;
-            do //denna loop körs till klienten anslutit till servern
+            do //this loop runs until the user has connected to a server
             {
-                serverIP = UserInput.GetIp(); //metod för att kontrollera att inmatningen är en godkänd ip-adress
-                if (_nwc.Connect(serverIP, _gamePort)) //metod som returnerar "true" om anslutningen lyckades
+                serverIP = UserInput.GetIp(); //method for checking if the input is a possible IP-adress
+                if (_nwc.Connect(serverIP, _gamePort)) //method returning "true" if the connection succeeded
                     connected = true;
 
             } while (!connected);
@@ -633,6 +634,11 @@ namespace SnakeBattle
                     {
                         PlayMessage pmsg = new PlayMessage(_player.PlayerName);
                         List<int[]> moveList = new List<int[]>();
+
+                        while (Console.KeyAvailable) //clears input buffer
+                        {
+                            Console.ReadKey(true);
+                        }
                         for (int i = 3; i > 0; i--)
                         {
                             if (_player.IsAlive)
@@ -666,6 +672,35 @@ namespace SnakeBattle
             Console.Clear();
         }
 
+
+
+        //[DllImport("msvcr71.dll")]
+        //static extern int _kbhit();
+
+        //[DllImport("msvcr71.dll")]
+        //static extern char _getwch();
+
+        //// return true/false if a keypress is pending
+        //public static bool KeyPressed
+        //{
+        //    get
+        //    {
+        //        return (_kbhit() != 0);
+        //    }
+        //}
+
+        //// fetch next char in buffer else null - return immediately
+        //public static char GetChar()
+        //{
+        //    return (KeyPressed) ? _getwch() : NullChar;
+        //}
+
+        //// flush all pending keystrokes in buffer - return immediately
+        //public static void FlushKeyboardBuffer()
+        //{
+        //    while (KeyPressed) GetChar();
+        //}
+
         private void RunSinglePlayer()
         {
             bool gameIsWon = false;
@@ -677,17 +712,32 @@ namespace SnakeBattle
             _currentGame.PlayerList.Add(_player);
 
             int numberOfPlayers = UserInput.GetIntFiltered("Ange antal spelare (2-8)", 2, 8);
+
+            string[] tmpNames = { "Wall-E", "HAL 9000", "SkyNet", "AlphaGo", "Deep Blue", "GLaDOS", "T-1000",
+                                  "R2-D2" , "C-3PO", "Ava", "Bender", "Baymax", "Bastion", "Optimus Prime", "Sir Killalot",
+                                  "RX-78-2 Gundam", "Tay", "MechaGodzilla", "Agent Smith", "Tron", "FemBot", "Borg Queen",
+                                  "TARS", "Data", "RoboCop", "Roy Batty", "The Iron Giant", "Siri"};
+            Random rnd = new Random();
+            string[] tmpNamesRnd = tmpNames.OrderBy(x => rnd.Next()).ToArray();
+
             for (int i = 1; i < numberOfPlayers; i++)
             {
-                _currentGame.PlayerList.Add(SinglePlayer.CreatePlayer(i));
+                int[] startPos = SinglePlayer.RandomizeStartPos();
+                Player p = new Player(tmpNamesRnd[i]) { Color=SinglePlayer.GetColor(i), Xpos = startPos[0], Ypos = startPos[1] };
+
+                _currentGame.PlayerList.Add(p);
             }
 
             InsertPlayers();
 
             do
             {
-                for (int i = 3; i > 0; i--)
+                while(Console.KeyAvailable)
                 {
+                    Console.ReadKey(true);
+                }
+
+                for (int i = 3; i > 0; i--)
                     if (!HandleMovementSP(i))
                     {
                         gameIsWon = true;
@@ -695,7 +745,6 @@ namespace SnakeBattle
                         break;
                     }
 
-                }
 
                 if (!gameIsWon)
                 {
@@ -735,13 +784,15 @@ namespace SnakeBattle
             if (_player.IsAlive)
             {
                 Console.Clear();
-                Console.WriteLine("You Win!");
+                PrintWinner(_player.PlayerName);
                 Console.ReadKey();
+                Console.Clear();
             } else
             {
                 Console.Clear();
                 Console.WriteLine("You died :(");
                 Console.ReadKey();
+                Console.Clear();
             }
 
         }
@@ -1248,27 +1299,31 @@ namespace SnakeBattle
         {
             int leftoffset = 3;
             int topoffset = 2;
-            for (int y = 0; y < 12; y++)
+            for (int i = 0; i < 20; i++)
             {
-                for (int x = 0; x < 6; x++)
+                for (int y = 0; y < 12; y++)
                 {
-                    int color = Randomizer.Rng(0, 6);
-                    if (color == 0)
-                        Console.ForegroundColor = ConsoleColor.Red;
-                    if (color == 1)
-                        Console.ForegroundColor = ConsoleColor.Blue;
-                    if (color == 2)
-                        Console.ForegroundColor = ConsoleColor.Green;
-                    if (color == 3)
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                    if (color == 4)
-                        Console.ForegroundColor = ConsoleColor.Magenta;
-                    if (color == 5)
-                        Console.ForegroundColor = ConsoleColor.Cyan;
-                    Console.SetCursorPosition((x * 14) + leftoffset, (y * 2) + topoffset);
-                    Console.Write(winnerName);
-                    Console.ForegroundColor = ConsoleColor.White;
+                    for (int x = 0; x < 6; x++)
+                    {
+                        int color = Randomizer.Rng(0, 6);
+                        if (color == 0)
+                            Console.ForegroundColor = ConsoleColor.Red;
+                        if (color == 1)
+                            Console.ForegroundColor = ConsoleColor.Blue;
+                        if (color == 2)
+                            Console.ForegroundColor = ConsoleColor.Green;
+                        if (color == 3)
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                        if (color == 4)
+                            Console.ForegroundColor = ConsoleColor.Magenta;
+                        if (color == 5)
+                            Console.ForegroundColor = ConsoleColor.Cyan;
+                        Console.SetCursorPosition((x * 14) + leftoffset, (y * 2) + topoffset);
+                        Console.Write(winnerName);
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
                 }
+                Thread.Sleep(30);
             }
             Console.WriteLine();
             Console.WriteLine();

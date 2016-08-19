@@ -13,11 +13,7 @@ namespace GameLogic
 
         private static ConsoleColor[] tmpColors = { ConsoleColor.Red, ConsoleColor.Blue, ConsoleColor.Green, ConsoleColor.Yellow ,
                                         ConsoleColor.Magenta, ConsoleColor.Cyan, ConsoleColor.DarkCyan, ConsoleColor.DarkRed};
-        private static string[] tmpNames = { "P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8" };
-        public static void StartSinglePlayer()
-        {
-
-        }
+        private static string[] tmpNames = { "Wall-E", "H.A.L. 9000", "SkyNet", "AlphaGo", "Deep Blue", "GLaDOS", "T-1000", "R2-D2" };
 
         public static void ClearPosList ()
         {
@@ -25,10 +21,9 @@ namespace GameLogic
                 _startPos.Clear();
         }
 
-        public static Player CreatePlayer(int i)
+        public static ConsoleColor GetColor(int i)
         {
-            int[] start = RandomizeStartPos();
-            return new Player(tmpNames[i]) { Color = tmpColors[i], Xpos = start[0], Ypos = start[1] , Direction = Direction.None };
+            return tmpColors[i];
         }
 
         public static Player CreateOwnPlayer()
@@ -36,8 +31,6 @@ namespace GameLogic
             int[] start = RandomizeStartPos();
             return new Player(GetUserName()) { Color = ConsoleColor.Red , Xpos = start[0], Ypos = start[1] };
         }
-
-
 
         public static string GetUserName()
         {
@@ -75,7 +68,7 @@ namespace GameLogic
             return ret;
         }
 
-        private static int[] RandomizeStartPos()
+        public static int[] RandomizeStartPos()
         {
             int[] result = new int[2];
             bool validPlacement = false;
